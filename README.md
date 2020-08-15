@@ -1,11 +1,11 @@
 # ETC5521 Assignment 1 
 
-Team name: [FILL]
+Team name: emu
 
 Team members:
 
-* [FILL]
-* [FILL]
+* Justin Thomas
+* Mayunk Bharadwaj
 
 # Steps
 
