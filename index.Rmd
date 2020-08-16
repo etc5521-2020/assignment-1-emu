@@ -1,10 +1,10 @@
 ---
 title: "ETC5521 Assignment 1"
-subtitle: "Your title"
-team: [FILL]
+subtitle: "Beach Volleyball Stats"
+team: [emu]
 author:
-  - [FILL]
-  - [FILL]
+  - [Justin Thomas]
+  - [Mayunk Bharadwaj]
 date: "`r Sys.Date()`"
 output: 
   html_document
@@ -12,12 +12,17 @@ output:
 
 [This assignment is for ETC5521 Assignment 1 by Team `r rmarkdown::metadata$team` comprising of `r knitr::combine_words(rmarkdown::metadata$author)`.]{style="color:#006DAE;"}
 
+```{r}
+library(tidyverse)
+library(readr)
+```
+
 
 # Introduction and motivation
 
 [FILL] Give the bigger picture of the data, and inspire the reader to learn more about the problem by reading your analysis. 
 
-#Data
+# Data
 
 ```{r data-read-in}
 
@@ -25,6 +30,39 @@ vb_matches <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience
 ```
 
 # Data description
+
+The source of our data set comes from a github repo, https://github.com/BigTimeStats/beach-volleyball created by Adam Vagner. This data set provides beach volleyball statistics for men's and women's matches at two major tournaments, the Fédération Internationale de Volleyball (FIVB) Beach Volleyball World Championships and the Association of Volleyball Professionals (AVP) tour. The data provided ranges from September 2000 to August 2019 and it has been collected by the data recorded at the tournaments.
+
+The structure of the data set is:
+Rows: 76756
+Columns: 65
+Data types: Character, Numeric, Data and Difftime  
+
+There are 65 variables in this data set:
+
+  1)"circuit"                 2) "tournament"             3) "country"              
+  4) "year"                   5) "date"                   6) "gender"               
+  7) "match_num"              8) "w_player1"              9) "w_p1_birthdate"       
+ 10) "w_p1_age"              11) "w_p1_hgt"              12) "w_p1_country"         
+ 13) "w_player2"             14) "w_p2_birthdate"        15) "w_p2_age"             
+ 16) "w_p2_hgt"              17) "w_p2_country"          18) "w_rank"               
+ 19) "l_player1"             20) "l_p1_birthdate"        21) "l_p1_age"             
+ 22) "l_p1_hgt"              23) "l_p1_country"          24) "l_player2"            
+ 25) "l_p2_birthdate"        26) "l_p2_age"              27) "l_p2_hgt"             
+ 28) "l_p2_country"          29) "l_rank"                30) "score"                
+ 31) "duration"              32) "bracket"               33) "round"                
+ 34) "w_p1_tot_attacks"      35) "w_p1_tot_kills"        36) "w_p1_tot_errors"      
+ 37) "w_p1_tot_hitpct"       38) "w_p1_tot_aces"         39) "w_p1_tot_serve_errors"
+ 40) "w_p1_tot_blocks"       41) "w_p1_tot_digs"         42) "w_p2_tot_attacks"     
+ 43) "w_p2_tot_kills"        44) "w_p2_tot_errors"       45) "w_p2_tot_hitpct"      
+ 46) "w_p2_tot_aces"         47) "w_p2_tot_serve_errors" 48) "w_p2_tot_blocks"      
+ 49) "w_p2_tot_digs"         50) "l_p1_tot_attacks"      51) "l_p1_tot_kills"       
+ 52) "l_p1_tot_errors"       53) "l_p1_tot_hitpct"       54) "l_p1_tot_aces"        
+ 55) "l_p1_tot_serve_errors" 56) "l_p1_tot_blocks"       57) "l_p1_tot_digs"        
+ 58) "l_p2_tot_attacks"      59) "l_p2_tot_kills"        60) "l_p2_tot_errors"      
+ 61) "l_p2_tot_hitpct"       62) "l_p2_tot_aces"         63) "l_p2_tot_serve_errors"
+ 64) "l_p2_tot_blocks"       65) "l_p2_tot_digs"
+
 
 # Analysis and findings
 
