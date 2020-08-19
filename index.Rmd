@@ -20,6 +20,21 @@ library(readr)
 
 # Introduction and motivation
 
+**Questions we will be looking to answer**
+
+Primary Question
+
+What does a winning beach volleyball player’s profile look like? Both male and female
+
+Secondary Questions
+
+Which countries have the most winning players?
+What is the average age of a winning player?
+What is the average height of a winning player?
+
+
+
+
 [FILL] Give the bigger picture of the data, and inspire the reader to learn more about the problem by reading your analysis. 
 
 # Data
