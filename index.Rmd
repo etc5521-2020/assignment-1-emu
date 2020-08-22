@@ -20,33 +20,31 @@ library(readr)
 
 # Introduction and motivation
 
-**Questions we will be looking to answer**
-
-Primary Question
-
-What does a winning beach volleyball team's profile look like? Both male and female
-
-Secondary Questions
-
-Which countries have the most winning players?
-What is the average age of a winning team?
-What is the average height of a winning team?
-
-
-
-
 [FILL] Give the bigger picture of the data, and inspire the reader to learn more about the problem by reading your analysis. 
 
-# Data
+# Data description
 
-```{r data-read-in}
+```{r data-read-in, include=FALSE}
 
 vb_matches <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-05-19/vb_matches.csv', guess_max = 76000)
 ```
 
-# Data description
+**Questions we will be looking to answer:**
 
-The source of our data set comes from a github repo, https://github.com/BigTimeStats/beach-volleyball created by Adam Vagner. This data set provides beach volleyball statistics for men's and women's matches at two major tournaments, the Fédération Internationale de Volleyball (FIVB) Beach Volleyball World Championships and the Association of Volleyball Professionals (AVP) tour. The data provided ranges from September 2000 to August 2019 and it has been collected by the data recorded at the tournaments.
+**Primary Question**
+
+What does a winning beach volleyball team's profile look like for both male and female teams?
+
+**Secondary Questions**
+
+Which countries have the most winning players?
+What is the average age of a winning team and how does it compare with a losing team?
+What is the average height of a winning team and how does it compare with a losing team?
+
+## Explanation of data being used
+This data set provides beach volleyball statistics for men's and women's matches at two major tournaments, the Fédération Internationale de Volleyball (FIVB) Beach Volleyball World Championships and the Association of Volleyball Professionals (AVP) tour. The matches are played with teams of 2. In this data set, tournament information, player information, player performance statistics and match results are recorded. The data provided ranges from September 2000 to August 2019 and it has been collected by the data recorded at the tournaments. 
+
+The original data source created by Adam Vagner had initial data recorded from September 2000 to July 2017, however it has been periodically updated with the most recent update coming in May 2020. This can be found at https://github.com/BigTimeStats/beach-volleyball.
 
 The structure of the data set is:
 Rows: 76756
@@ -77,6 +75,60 @@ There are 65 variables in this data set:
  58) "l_p2_tot_attacks"      59) "l_p2_tot_kills"        60) "l_p2_tot_errors"      
  61) "l_p2_tot_hitpct"       62) "l_p2_tot_aces"         63) "l_p2_tot_serve_errors"
  64) "l_p2_tot_blocks"       65) "l_p2_tot_digs"
+
+## Data Cleaning
+
+Our data was already in tidy format, so we did not have much cleaning to do. However in order to conduct our analysis, we have tidied the data set by removing variables that are not pertinent to answer our questions. 
+
+```{r tidy-data, include=FALSE}
+vb_matches <- vb_matches %>% select(-duration:-l_p2_tot_digs) %>% select(c(-tournament, -match_num, -w_rank, -l_rank))
+```
+
+The methods we have used to tidy our data is as follows:
+
+- We deselected some variables from appearing in the data set and overwrote the original data set with the new tidied data set.
+
+The reason for why we did not include variables such as match duration, or individual player performance statistics was because it did not fit with answering the questions we have laid out. Additionally, majority of the data for these variables were unknown, so it would not have been useful in our analysis.
+
+## Description of variables in data set as organised in tidy form 
+
+Variable       | Description
+---------------|------------
+circuit	       |Either AVP (USA) or FIVB (International)
+country	       |Country where tournament played
+year	         |Year of tournament
+date	         |Date of match
+gender	       |Gender of team
+w_player1	     |Winner player 1 Name
+w_p1_birthdate |Winner player 1 birth date
+w_p1_age       |Winner player 1 age
+w_p1_hgt	     |Winner player 1 height in inches
+w_p1_country	 |Winner player country
+w_player2	     |Winner player 2 name
+w_p2_birthdate |Winner player 2 birth date
+w_p2_age	     |Winner player 2 age
+w_p2_hgt	     |Winner player 2 height in inches
+w_p2_country	 |Winner player 2 country
+l_player1	     |Losing player 1 name
+l_p1_birthdate |Losing player 1 birth date
+l_p1_age	     |Losing player 1 age
+l_p1_hgt	     |Losing player 1 height in inches
+l_p1_country	 |Losing player 1 country
+l_player2	     |Losing player 2 name
+l_p2_birthdate |Losing player 2 birth date
+l_p2_age	     |Losing player 2 age
+l_p2_hgt	     |Losing player 2 height in inches
+l_p2_country	 |Losing player 2 country
+score	         |Match score separated by a dash and matches separated by a comma, eg 21 points to 12 points is 21-12
+
+## Data sources
+
+The original data is sourced from:
+Vagner, A. (2020, July 20). *BigTimeStats/beach-volleyball*. Retrieved August 22, 2020, from https://github.com/BigTimeStats/beach-volleyball
+
+To load the data set, we had to use a GitHub repository that had the data set. The name of this repository is "Tidy Tuesday". The data set was sourced from this repository:
+Mock, J. (2020, May 19). *rfordatasciene/tidytuesday*. Retrieved August 22, 2020, from 
+https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-05-19/readme.md
 
 
 # Analysis and findings
