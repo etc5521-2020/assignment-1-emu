@@ -24,13 +24,13 @@ library(readr)
 
 Primary Question
 
-What does a winning beach volleyball player’s profile look like? Both male and female
+What does a winning beach volleyball team's profile look like? Both male and female
 
 Secondary Questions
 
 Which countries have the most winning players?
-What is the average age of a winning player?
-What is the average height of a winning player?
+What is the average age of a winning team?
+What is the average height of a winning team?
 
 
 
