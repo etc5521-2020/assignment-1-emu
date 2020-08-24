@@ -135,4 +135,22 @@ https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-05-19/
 
 [FILL] Should include at least one plot or numerical summary for each of your questions, that helps the reader arrive at an answer. You should also write paragraphs describing the methods, summaries and findings. 
 
+```{r arrange-desc, include=FALSE}
+country <- vb_matches %>% group_by(w_p1_country, w_p2_country) %>% tally()
+
+country <- arrange(country, desc(n))
+```
+
+```{r plot-players}
+ggplot(country %>% head(20), aes(n, reorder(w_p1_country, +n))) +
+  geom_bar(stat = "identity", color = "black", fill = "blue") +
+  xlab("Number of players") +
+  ylab("Country") +
+  ggtitle("Count of players representing their respective countries")
+```
+
+```{r USA, eval=FALSE}
+country %>% filter(w_p1_country == "United States" | w_p2_country == "United States")
+```
+
 # References
