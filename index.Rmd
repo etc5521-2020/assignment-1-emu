@@ -137,24 +137,54 @@ https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-05-19/
 
 [FILL] Should include at least one plot or numerical summary for each of your questions, that helps the reader arrive at an answer. You should also write paragraphs describing the methods, summaries and findings. 
 
-```{r arrange-desc, include=FALSE}
-country <- vb_matches %>% group_by(w_p1_country, w_p2_country) %>% tally()
+## Which countries have the most winning players?
 
-country <- arrange(country, desc(n))
+For both the AVP and FIVB tournaments, a team consists of 2 players. Each player in the team either comes from the same country or they come from different countries. Thus, in this section, our analysis focuses on finding the countries that had the most number of winning teams. This will help us find the countries that had the most winning players. 
+
+```{r arrange-desc, include=FALSE}
+country <- vb_matches %>% distinct(w_player1, w_p1_country, w_player2, w_p2_country) %>%                 group_by(w_p1_country, w_p2_country) %>% 
+                tally() %>% drop_na() %>% arrange(desc(n))
 ```
 
-```{r plot-players}
-p1 <- ggplot(country %>% head(20), aes(n, reorder(w_p1_country, +n))) +
+```{r rename-variables, include=FALSE}
+country <- country %>% rename(`Player 1 country` = w_p1_country,
+                     `Player 2 country` = w_p2_country,
+                     `Number of teams` = n)
+```
+
+In order to find our answer to this question, we first did some data wrangling to get the data set up for analysis. Then we followed the steps outlined below:
+
+- Firstly, find the distinct players in the variables w_p1_country and w_p2_country. This is to ensure we don't get multiple rows of the same team with the same combination of player 1 and player 2. 
+- After getting distinct players, we grouped the players by their respective countries.
+- Following this, we use the tally() function to count up the total number of teams by countries and dropped any rows that had no values in them. 
+- This gave us a list of all the participating countries with a total count of winning teams per country.
+- Lastly, we rearranged the data to show the total count in descending order and we also renamed the variables to make it more meaningful.
+
+```{r plot-teams, echo=FALSE, fig.cap="Top 20 countries with the most winning teams"}
+p1 <- ggplot(country %>% head(20), aes(`Number of teams`, reorder(`Player 1 country`, +`Number of teams`))) +
   geom_bar(stat = "identity", fill = "steelblue") +
-  xlab("Number of players") +
+  xlab("Number of teams") +
   ylab("Country") +
-  ggtitle("Top 20 countries with the most winning players")
+  ggtitle("Top 20 countries with the most winning teams") +
+  theme(panel.grid.major = element_blank()) +
+  theme(plot.background = element_rect(fill = "grey93"))
 
 ggplotly(p1, tooltip = "x")
 ```
 
-```{r USA, eval=FALSE}
-country %>% filter(w_p1_country == "United States" | w_p2_country == "United States")
+
+Figure \@ref(fig:plot-teams) shows the top 20 countries with the most number of winning teams. We can see that the United States was the most dominating country with a total of 4200 winning teams. This means that 8400 different players came from the United States and won. In distant second place, Brazil had 258 winning teams, and so 516 Brazilian players won matches. In a close third place, Germany triumphed with 200 winning teams comprising of 500 players. The remaining teams ranged from having 166 winning teams to 45 winning teams.
+
+The clear winner here is United States and we can conclude that majority of the winning players in the AVP and FIVB tournaments hail from the United States.
+
+
+
+```{r USA, include=FALSE}
+USA <- country %>% filter(`Player 1 country` == "United States" | `Player 2 country` == "United States") 
+```
+
+```{r subset-of-USA-combos, echo=FALSE}
+USA %>% head(20) %>% kable %>% kable_styling(bootstrap_options = c("hover", "striped"))
 ```
 
 # References
