@@ -15,6 +15,8 @@ output:
 ```{r}
 library(tidyverse)
 library(readr)
+library(plotly)
+library(kableExtra)
 ```
 
 
@@ -142,11 +144,13 @@ country <- arrange(country, desc(n))
 ```
 
 ```{r plot-players}
-ggplot(country %>% head(20), aes(n, reorder(w_p1_country, +n))) +
-  geom_bar(stat = "identity", color = "black", fill = "blue") +
+p1 <- ggplot(country %>% head(20), aes(n, reorder(w_p1_country, +n))) +
+  geom_bar(stat = "identity", fill = "steelblue") +
   xlab("Number of players") +
   ylab("Country") +
-  ggtitle("Count of players representing their respective countries")
+  ggtitle("Top 20 countries with the most winning players")
+
+ggplotly(p1, tooltip = "x")
 ```
 
 ```{r USA, eval=FALSE}
