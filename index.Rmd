@@ -139,7 +139,7 @@ https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-05-19/
 
 ## Which countries have the most winning players?
 
-For both the AVP and FIVB tournaments, a team consists of 2 players. Each player in the team either comes from the same country or they come from different countries. Thus, in this section, our analysis focuses on finding the countries that had the most number of winning teams. This will help us find the countries that had the most winning players. 
+For both the AVP and FIVB tournaments, a team consists of 2 players. Each player in the team either comes from the same country or they can come from different countries. Thus, in this section, our analysis focuses on finding the countries that had the most number of winning teams. This will help us find the countries that had the most winning players. 
 
 ```{r arrange-desc, include=FALSE}
 country <- vb_matches %>% distinct(w_player1, w_p1_country, w_player2, w_p2_country) %>%                 group_by(w_p1_country, w_p2_country) %>% 
@@ -158,7 +158,8 @@ In order to find our answer to this question, we first did some data wrangling t
 - After getting distinct players, we grouped the players by their respective countries.
 - Following this, we use the tally() function to count up the total number of teams by countries and dropped any rows that had no values in them. 
 - This gave us a list of all the participating countries with a total count of winning teams per country.
-- Lastly, we rearranged the data to show the total count in descending order and we also renamed the variables to make it more meaningful.
+- We rearranged the data to show the total count in descending order and we also renamed the variables to make it more meaningful.
+- Lastly, we saved this as a new data set called "country" to be used later on.
 
 ```{r plot-teams, echo=FALSE, fig.cap="Top 20 countries with the most winning teams"}
 p1 <- ggplot(country %>% head(20), aes(`Number of teams`, reorder(`Player 1 country`, +`Number of teams`))) +
@@ -173,18 +174,33 @@ ggplotly(p1, tooltip = "x")
 ```
 
 
-Figure \@ref(fig:plot-teams) shows the top 20 countries with the most number of winning teams. We can see that the United States was the most dominating country with a total of 4200 winning teams. This means that 8400 different players came from the United States and won. In distant second place, Brazil had 258 winning teams, and so 516 Brazilian players won matches. In a close third place, Germany triumphed with 200 winning teams comprising of 500 players. The remaining teams ranged from having 166 winning teams to 45 winning teams.
+Figure \@ref(fig:plot-teams) shows the top 20 countries with the most number of winning teams. We can see that the United States was the most dominating country with a total of 4200 winning teams. This means that 8400 players came from the United States and won. In distant second place, Brazil had 258 winning teams, and so 516 Brazilian players won matches. In a close third place, Germany triumphed with 200 winning teams comprising of 500 players. The remaining teams ranged from having 166 winning teams to 45 winning teams.
 
 The clear winner here is United States and we can conclude that majority of the winning players in the AVP and FIVB tournaments hail from the United States.
 
 
+We decided to dig further into United States. Although there were 4200 teams where both players in each team came from the United States, there were instances were 1 player came from the United States and another player came from a different country. This following section takes a look at the different countries that partnered with the United States.
 
 ```{r USA, include=FALSE}
 USA <- country %>% filter(`Player 1 country` == "United States" | `Player 2 country` == "United States") 
 ```
 
-```{r subset-of-USA-combos, echo=FALSE}
+In order to find the different countries that partnered with the United States, we followed the steps outlined below:
+
+- First, we filtered the rows from the "country" data set so that values from "Player 1 country" variable are "United States" or values from "Player 2 country" variable are "United States". 
+
+This gave us a list of all the different country combinations where either player 1 or player 2 came from the United States and the other non-USA player's country.
+
+
+```{r USA-combos, echo=FALSE}
 USA %>% head(20) %>% kable %>% kable_styling(bootstrap_options = c("hover", "striped"))
 ```
+
+
+Figure \@ref(tab:USA-combos) shows 20 different country combinations, which is only a subset of the different countries that partnered with the United States. In total there were 66 different combinations. 
+
+Apart from both players coming from the United States, 44 different teams had player 1 come from the United States and player 2 come from Brazil. 34 teams had player 1 come from Poland and player 2 come from the United States. 
+
+From looking at the rest of the table, we can see just how popular the United States is as a competing country in volleyball tournaments. It not only registers in tournaments where both players come from the United States, but it also registers where only 1 player in the team comes from the United States and partners with a player from a different country.
 
 # References
