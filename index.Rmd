@@ -6,23 +6,38 @@ author:
   - [Justin Thomas]
   - [Mayunk Bharadwaj]
 date: "`r Sys.Date()`"
-output: 
-  html_document
+output:
+  bookdown::html_document2
 ---
 
 [This assignment is for ETC5521 Assignment 1 by Team `r rmarkdown::metadata$team` comprising of `r knitr::combine_words(rmarkdown::metadata$author)`.]{style="color:#006DAE;"}
 
-```{r}
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, fig.align = "center")
+
 library(tidyverse)
-library(readr)
 library(plotly)
 library(kableExtra)
 ```
 
 
-# Introduction and motivation
+# Introduction and Motivation
 
-[FILL] Give the bigger picture of the data, and inspire the reader to learn more about the problem by reading your analysis. 
+Using the data provided on the 'tidytuesday' platform, our primary question is to identify the characteristics of a winning beach volleyball team for both males and females. 
+
+We believe that there might be differences in characteristics for a winning team compared to a losing team because of, for example, prevalence of beach volleyball in certain countries. Also, we theorise that taller and younger players may potentially be better at beach volleyball because of the competitive advantage they may have over shorter and seasoned players.
+
+Therefore, the secondary questions that will help us answer our primary question are:
+
+- Which countries have the most winning players?
+- What is the average age of players on a winning team?
+- What is the average height of players on a winning team?
+
+In the following report, the reader will be able to find a description and information about the source and limitations of the data; information on how the data was cleaned; an analysis that will answer the above questions and a conclusion.
+
+## Limitations of Data Analysis
+
+While going through the dataset, we found that the data was incomplete because there were multiple 'NA' values for individual player performance statistics. As such, observations which featured 'NA' values had to be removed as they were unlikely to be helpful in our analysis.
 
 # Data description
 
@@ -31,19 +46,19 @@ library(kableExtra)
 vb_matches <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-05-19/vb_matches.csv', guess_max = 76000)
 ```
 
-**Questions we will be looking to answer:**
 
 **Primary Question**
 
-What does a winning beach volleyball team's profile look like for both male and female teams?
+What are the characteristics of a winning beach volleyball team for both males and females?
 
 **Secondary Questions**
 
-Which countries have the most winning players?
-What is the average age of a winning team and how does it compare with a losing team?
-What is the average height of a winning team and how does it compare with a losing team?
+- Which countries have the most winning players?
+- What is the average age of players on a winning team?
+- What is the average height of players on a winning team?
 
 ## Explanation of data being used
+
 This data set provides beach volleyball statistics for men's and women's matches at two major tournaments, the Fédération Internationale de Volleyball (FIVB) Beach Volleyball World Championships and the Association of Volleyball Professionals (AVP) tour. The matches are played with teams of 2. In this data set, tournament information, player information, player performance statistics and match results are recorded. The data provided ranges from September 2000 to August 2019 and it has been collected by the data recorded at the tournaments. 
 
 The original data source created by Adam Vagner had initial data recorded from September 2000 to July 2017, however it has been periodically updated with the most recent update coming in May 2020. This can be found at https://github.com/BigTimeStats/beach-volleyball.
@@ -55,28 +70,15 @@ Data types: Character, Numeric, Data and Difftime
 
 There are 65 variables in this data set:
 
-  1)"circuit"                 2) "tournament"             3) "country"              
-  4) "year"                   5) "date"                   6) "gender"               
-  7) "match_num"              8) "w_player1"              9) "w_p1_birthdate"       
- 10) "w_p1_age"              11) "w_p1_hgt"              12) "w_p1_country"         
- 13) "w_player2"             14) "w_p2_birthdate"        15) "w_p2_age"             
- 16) "w_p2_hgt"              17) "w_p2_country"          18) "w_rank"               
- 19) "l_player1"             20) "l_p1_birthdate"        21) "l_p1_age"             
- 22) "l_p1_hgt"              23) "l_p1_country"          24) "l_player2"            
- 25) "l_p2_birthdate"        26) "l_p2_age"              27) "l_p2_hgt"             
- 28) "l_p2_country"          29) "l_rank"                30) "score"                
- 31) "duration"              32) "bracket"               33) "round"                
- 34) "w_p1_tot_attacks"      35) "w_p1_tot_kills"        36) "w_p1_tot_errors"      
- 37) "w_p1_tot_hitpct"       38) "w_p1_tot_aces"         39) "w_p1_tot_serve_errors"
- 40) "w_p1_tot_blocks"       41) "w_p1_tot_digs"         42) "w_p2_tot_attacks"     
- 43) "w_p2_tot_kills"        44) "w_p2_tot_errors"       45) "w_p2_tot_hitpct"      
- 46) "w_p2_tot_aces"         47) "w_p2_tot_serve_errors" 48) "w_p2_tot_blocks"      
- 49) "w_p2_tot_digs"         50) "l_p1_tot_attacks"      51) "l_p1_tot_kills"       
- 52) "l_p1_tot_errors"       53) "l_p1_tot_hitpct"       54) "l_p1_tot_aces"        
- 55) "l_p1_tot_serve_errors" 56) "l_p1_tot_blocks"       57) "l_p1_tot_digs"        
- 58) "l_p2_tot_attacks"      59) "l_p2_tot_kills"        60) "l_p2_tot_errors"      
- 61) "l_p2_tot_hitpct"       62) "l_p2_tot_aces"         63) "l_p2_tot_serve_errors"
- 64) "l_p2_tot_blocks"       65) "l_p2_tot_digs"
+```{r}
+vb_matches %>%
+  names() %>%
+  as_tibble() %>%
+  rename(`Variable Name`=value) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("hover", "striped"))
+  
+```
 
 ## Data Cleaning
 
@@ -135,7 +137,6 @@ https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-05-19/
 
 # Analysis and findings
 
-[FILL] Should include at least one plot or numerical summary for each of your questions, that helps the reader arrive at an answer. You should also write paragraphs describing the methods, summaries and findings. 
 
 ## Which countries have the most winning players?
 
@@ -192,7 +193,7 @@ In order to find the different countries that partnered with the United States, 
 This gave us a list of all the different country combinations where either player 1 or player 2 came from the United States and the other non-USA player's country.
 
 
-```{r USA-combos, echo=FALSE}
+```{r USA-combos, echo=FALSE, fig.cap="Different combinations of countries that partnered with the United States"}
 USA %>% head(20) %>% kable %>% kable_styling(bootstrap_options = c("hover", "striped"))
 ```
 
@@ -204,13 +205,12 @@ Apart from both players coming from the United States, 44 different teams had pl
 From looking at the rest of the table, we can see just how popular the United States is as a competing country in volleyball tournaments. It not only registers in tournaments where both players come from the United States, but it also registers where only 1 player in the team comes from the United States and partners with a player from a different country.
 
 
-*What is the average age of a winning team and how does it compare with a losing team?*
+## What is the average age of a winning team and how does it compare with a losing team?
 
-The average age for male winning players 1 and 2 are 29.40 and 29.32 respectively. The average age for male losing players 1 and 2, on the other hand, are 29.08 and 28.95. There is no obvious bias to winning and losing due to age - as the average age for losers and winners is about the same. 
-
+The average age for male winning players 1 and 2 are 29.40 and 29.32 respectively. The average age for male losing players 1 and 2, on the other hand, are 29.08 and 28.95 respectively. There is no obvious bias to winning and losing due to age - as the average age for losers and winners is about the same. 
 This might tell us something, however, about the average age of participation in professional male vollyeball. If we plot every age of, for instance, male winning player 1 (\@ref(fig:age-2)) and male losing player 2 (\@ref(fig:age-3)) as examples, we see that the most commonly occuring ages are in the late 20s (28-29 year of age). Therefore, it is reasonable to infer that male volleyball players - due to the high levels of participation at those ages -- hit their peak in their late 20s.
 
-Now, let's consider women's volleyball. The average age for female winning players 1 and 2 are 27.98 and 28.29. The average age for female losing players 1 and 2 are 27.52 and 27.73. As was the case with the male game, age does not seem to strongly infuence winning. However, it is interesting to note that their is a slight difference in average age of winning and losing players between the genders. If we take a look at the average age of winning player 2 in figure (\@ref(fig:age-4)), we can see that the average age of winning player 2 is less for females than males. Similarly, if we consider the average age of losing player 1 in figure (\@ref(fig:age-5)) , we can see that the average age is also less for females than it is for males.
+Now, let's consider women's volleyball. The average age for female winning players 1 and 2 are 27.98 and 28.29 respectively. The average age for female losing players 1 and 2 are 27.52 and 27.73 respectively. As was the case with the male game, age does not seem to strongly infuence winning. However, it is interesting to note that their is a slight difference in average age of winning and losing players between the genders. If we take a look at the average age of winning player 2 in figure (\@ref(fig:age-4)), we can see that the average age of winning player 2 is less for females than males. Similarly, if we consider the average age of losing player 1 in figure (\@ref(fig:age-5)) , we can see that the average age is also less for females than it is for males.
 
 ```{r age}
 #selecting only relevant variables
@@ -237,8 +237,7 @@ age %>%
   ggplot() +
   geom_histogram(aes(w_p1_age),binwidth = 1) +
   xlab("Ages") +
-  ylab("") +
-  ggtitle("Ages of Male Winning Player 1")
+  ylab("")
 ```
 
 ```{r age-3, fig.cap="Ages of Male Losing Player 2"}
@@ -248,8 +247,7 @@ age %>%
   ggplot() +
   geom_histogram(aes(l_p2_age),binwidth = 1) +
   xlab("Ages") +
-  ylab("") +
-  ggtitle("Ages of Male Losing Player 2")
+  ylab("")
 ```
 
 ```{r age-4, fig.cap="Ages of Winning Player 2 by gender"}
@@ -263,8 +261,7 @@ age %>%
   theme(
   axis.text.x = element_blank(),
   axis.ticks = element_blank()) +
-  xlab("Ages") +
-  ggtitle("Ages of Winning Player 2 by gender")
+  xlab("Ages")
 ```
 
 ```{r age-5, fig.cap="Ages of Losing Player 1 by gender"}
@@ -278,17 +275,16 @@ age %>%
   theme(
   axis.text.x = element_blank(),
   axis.ticks = element_blank()) +
-  xlab("Ages") +
-  ggtitle("Ages of Losing Player 1 by gender")
+  xlab("Ages")
 
 ```
 
 
-*What is the average height of a winning team and how does it compare with a losing team?*
+## What is the average height of a winning team and how does it compare with a losing team?
 
-The average height for female winning players 1 and 2 are 70.91 and 70.85 inches respectively. The average height for female losing players 1 and 2 are 70.62 and 70.72 inches respectively. Althought the average height for the losing players is less than the height of winning players, it is not a huge difference.
+The average height for female winning players 1 and 2 are 70.91 and 70.85 inches respectively. The average height for female losing players 1 and 2 are 70.62 and 70.72 inches respectively. Although the average height for the losing players is less than the height of winning players, it is not a huge difference.
 
-The average height for male winning players 1 and 2 are 76.28 and 76.39 inches respectively, compared to the height for losing players 1 and 2 of 75.98 and 76.15. Consider figures \@ref(fig:male-height-diff-boxplot) and \@ref(fig:female-height-diff-boxplot), which display the difference in heights between winning and losing players 1 (fig.\@ref(fig:male-height-diff-boxplot)) and winning and losing player 2 (fig.\@ref(fig:female-height-diff-boxplot)). In both situations, the means in difference in height are pretty evenly centred around 0. so we probably can't say much to the effect of height difference on winning a volleyball game. We can however say that male volleyball participants are generally taller than female volleyball participants although through commonsense we know this phenomenon is not unique to just volleyball.
+The average height for male winning players 1 and 2 are 76.28 and 76.39 inches respectively, compared to the height for losing players 1 and 2 of 75.98 and 76.15 respectively. Consider figures \@ref(fig:male-height-diff-boxplot) and \@ref(fig:female-height-diff-boxplot), which display the difference in heights between winning and losing players 1 (fig.\@ref(fig:male-height-diff-boxplot)) and winning and losing player 2 (fig.\@ref(fig:female-height-diff-boxplot)). In both situations, the means in difference in height are pretty evenly centred around 0. so we probably can't say much to the effect of height difference on winning a volleyball game. We can however say that male volleyball participants are generally taller than female volleyball participants although through common sense we know this phenomenon is not unique to just volleyball.
 
 ```{r height-1}
 
@@ -326,8 +322,7 @@ height_diff %>%
   theme(
   axis.text.x = element_blank(),
   axis.ticks = element_blank()) +
-  xlab("Difference in Height (inches)") +
-  ggtitle("Difference in Height")
+  xlab("Difference in Height (inches)")
 ```
 
 ```{r female-height-diff-boxplot, fig.cap="Difference in Heights of Male Player 2"}
@@ -341,9 +336,31 @@ height_diff %>%
   theme(
   axis.text.x = element_blank(),
   axis.ticks = element_blank()) +
-  xlab("Difference in Height (inches)") +
-  ggtitle("Difference in Heights of Male Player 2")
+  xlab("Difference in Height (inches)")
 ```
+
+# Conclusion
+
+After our analysis, we have concluded that a typical winning male volleyball team probably has both players originating from the United States, with player one having an average age of 29.40 and an average height of 76.28 inches with player two having an average age of 29.32 and an average height of 76.39 inches.
+
+In addition, a typical winning female volleyball team probably has both players originating from the United States, with player one having an average age of 27.98 and an average height of 70.91 inches with player two having an average age of 28.29 and an average height of 70.85 inches.
 
 
 # References
+
+
+Mock, J. (2020, May 19). *rfordatasciene/tidytuesday*. Retrieved August 22, 2020, from 
+https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-05-19/readme.md
+
+Sievert, C. (2020). Interactive Web-Based Data Visualization with R, plotly, and
+shiny. Chapman and Hall/CRC Florida.
+
+Vagner, A. (2020, July 20). *BigTimeStats/beach-volleyball*. Retrieved August 22, 2020, from https://github.com/BigTimeStats/beach-volleyball
+
+Wickham et al., (2019). Welcome to the tidyverse. Journal of Open
+Source Software, 4(43), 1686, https://doi.org/10.21105/joss.01686
+
+Zhu, H. (2019). kableExtra: Construct Complex Table with 'kable' and
+Pipe Syntax. R package version 1.1.0.
+https://CRAN.R-project.org/package=kableExtra
+
