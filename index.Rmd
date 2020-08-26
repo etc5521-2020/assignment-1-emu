@@ -165,7 +165,7 @@ In order to find our answer to this question, we first did some data wrangling t
 - We rearranged the data to show the total count in descending order and we also renamed the variables to make it more meaningful.
 - Lastly, we saved this as a new data set called "country" to be used later on.
 
-```{r plot-teams, echo=FALSE, fig.cap="Top 20 countries with the most winning teams"}
+```{r plot-teams, echo=FALSE, fig.align = "center", fig.cap="Top 20 countries with the most winning teams"}
 p1 <- ggplot(country %>% head(20), aes(`Number of teams`, reorder(`Player 1 country`, +`Number of teams`))) +
   geom_bar(stat = "identity", fill = "steelblue") +
   xlab("Number of teams") +
@@ -196,12 +196,12 @@ In order to find the different countries that partnered with the United States, 
 This gave us a list of all the different country combinations where either player 1 or player 2 came from the United States and the other non-USA player's country.
 
 
-```{r USA-combos, echo=FALSE, fig.cap="Different combinations of countries that partnered with the United States"}
-USA %>% head(20) %>% kable %>% kable_styling(bootstrap_options = c("hover", "striped"))
+```{r USA-combos, echo=FALSE}
+USA %>% head(20) %>% kable(caption = "Different combinations of countries that partnered with the United States") %>% kable_styling(bootstrap_options = c("hover", "striped")) 
 ```
 
 
-Figure \@ref(tab:USA-combos) shows 20 different country combinations, which is only a subset of the different countries that partnered with the United States. In total there were 66 different combinations. 
+Table \@ref(tab:USA-combos) shows 20 different country combinations, which is only a subset of the different countries that partnered with the United States. In total there were 66 different combinations. 
 
 Apart from both players coming from the United States, 44 different teams had player 1 come from the United States and player 2 come from Brazil. 34 teams had player 1 come from Poland and player 2 come from the United States. 
 
@@ -213,9 +213,9 @@ From looking at the rest of the table, we can see just how popular the United St
 N.B. For the method used to complete this analysis, please refer to the commentary included within the code chunks.
 
 The average age for male winning players 1 and 2 are 29.40 and 29.32 respectively. The average age for male losing players 1 and 2, on the other hand, are 29.08 and 28.95 respectively. There is no obvious bias to winning and losing due to age - as the average age for losers and winners is about the same. 
-This might tell us something, however, about the average age of participation in professional male vollyeball. If we plot every age of, for instance, male winning player 1 (Figure \@ref(fig:age-2)) and male losing player 2 (Figure \@ref(fig:age-3)) as examples, we see that the most commonly occuring ages are in the late 20s (28-29 year of age). Therefore, it is reasonable to infer that male volleyball players - due to the high levels of participation at those ages -- hit their peak in their late 20s.
+This might tell us something, however, about the average age of participation in professional male volleyball. If we plot every age of, for instance, male winning player 1 (Figure \@ref(fig:age-2)) and male losing player 2 (Figure \@ref(fig:age-3)) as examples, we see that the most commonly occurring ages are in the late 20s (28-29 year of age). Therefore, it is reasonable to infer that male volleyball players - due to the high levels of participation at those ages -- hit their peak in their late 20s.
 
-Now, let's consider women's volleyball. The average age for female winning players 1 and 2 are 27.98 and 28.29 respectively. The average age for female losing players 1 and 2 are 27.52 and 27.73 respectively. As was the case with the male game, age does not seem to strongly infuence winning. However, it is interesting to note that their is a slight difference in average age of winning and losing players between the genders. If we take a look at the average age of winning player 2 in Figure \@ref(fig:age-4), we can see that the average age of winning player 2 is less for females than males. Similarly, if we consider the average age of losing player 1 in Figure \@ref(fig:age-5), we can see that the average age is also less for females than it is for males.
+Now, let's consider women's volleyball. The average age for female winning players 1 and 2 are 27.98 and 28.29 respectively. The average age for female losing players 1 and 2 are 27.52 and 27.73 respectively. As was the case with the male game, age does not seem to strongly influence winning. However, it is interesting to note that their is a slight difference in average age of winning and losing players between the genders. If we take a look at the average age of winning player 2 in Figure \@ref(fig:age-4), we can see that the average age of winning player 2 is less for females than males. Similarly, if we consider the average age of losing player 1 in Figure \@ref(fig:age-5), we can see that the average age is also less for females than it is for males.
 
 ```{r age}
 #selecting only relevant variables for analysis
@@ -250,7 +250,7 @@ ggplotly(age_plot, tooltip = "x")
 ```
 
 ```{r age-3, fig.cap="Ages of Male Losing Player 2"}
-#creating histogramfor  male losing player 2 ages
+#creating histogram for male losing player 2 ages
 age_plot_2 <- age %>%
   filter(gender=="M") %>%
   ggplot() +
@@ -325,7 +325,7 @@ height_summary_male <- height %>%
 
 ```{r height-diff}
 
-#creating two new variables measuting difference in height between winning and losing players
+#creating two new variables measuring difference in height between winning and losing players
 height_diff <- vb_matches %>%
   mutate(diff_hgt_p1=w_p1_hgt-l_p1_hgt,
          diff_hgt_p2=w_p2_hgt-l_p2_hgt)
