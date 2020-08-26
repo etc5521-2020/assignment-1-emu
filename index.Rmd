@@ -219,7 +219,7 @@ age %>%
 
 The average height for female winning players 1 and 2 are 70.91 and 70.85 inches respectively. The average height for female losing players 1 and 2 are 70.62 and 70.72 inches respectively. Althought the average height for the losing players is less than the height of winning players, it is not a huge difference.
 
-The average height for male winning players 1 and 2 are 76.28 and 76.39 inches respectively, compared to the height for losing players 1 and 2 of 75.98 and 76.15. Consider figures \@ref(fig:male-height-diff-boxplot) and \@ref(fig:female-height-diff-boxplot), which display the difference in heights between winning and losing players 1 (fig.\@ref(fig:male-height-diff-boxplot)) and winning and losing player 2 (fig.\@ref(fig:female-height-diff-boxplot)). In both situations, the means in difference in height are pretty evenly centred around 0. so we probably can't say much to the effect of height difference on winning a volleyball game. We can however see that male volleyball participants are generally taller than female volleyball participants although through commonsense we know this phenomenon is not unique to just volleyball.
+The average height for male winning players 1 and 2 are 76.28 and 76.39 inches respectively, compared to the height for losing players 1 and 2 of 75.98 and 76.15. Consider figures \@ref(fig:male-height-diff-boxplot) and \@ref(fig:female-height-diff-boxplot), which display the difference in heights between winning and losing players 1 (fig.\@ref(fig:male-height-diff-boxplot)) and winning and losing player 2 (fig.\@ref(fig:female-height-diff-boxplot)). In both situations, the means in difference in height are pretty evenly centred around 0. so we probably can't say much to the effect of height difference on winning a volleyball game. We can however say that male volleyball participants are generally taller than female volleyball participants although through commonsense we know this phenomenon is not unique to just volleyball.
 
 ```{r height-1}
 
@@ -261,7 +261,7 @@ height_diff %>%
   ggtitle("Difference in Height")
 ```
 
-```{r female-height-diff-boxplot, fig.cap=Difference in Heights of Male Player 2"}
+```{r female-height-diff-boxplot, fig.cap="Difference in Heights of Male Player 2"}
 
 #boxplot for difference in height in male player 2s
 height_diff %>%
