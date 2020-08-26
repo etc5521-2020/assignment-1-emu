@@ -135,52 +135,146 @@ https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-05-19/
 
 [FILL] Should include at least one plot or numerical summary for each of your questions, that helps the reader arrive at an answer. You should also write paragraphs describing the methods, summaries and findings. 
 
+*What is the average age of a winning team and how does it compare with a losing team?*
+
+The average age for male winning players 1 and 2 are 29.40 and 29.32 respectively. The average age for male losing players 1 and 2, on the other hand, are 29.08 and 28.95. There is no obvious bias to winning and losing due to age - as the average age for losers and winners is about the same. 
+
+This might tell us something, however, about the average age of participation in professional male vollyeball. If we plot every age of, for instance, male winning player 1 (\@ref(fig:age-2)) and male losing player 2 (\@ref(fig:age-3)) as examples, we see that the most commonly occuring ages are in the late 20s (28-29 year of age). Therefore, it is reasonable to infer that male volleyball players - due to the high levels of participation at those ages -- hit their peak in their late 20s.
+
+Now, let's consider women's volleyball. The average age for female winning players 1 and 2 are 27.98 and 28.29. The average age for female losing players 1 and 2 are 27.52 and 27.73. As was the case with the male game, age does not seem to strongly infuence winning. However, it is interesting to note that their is a slight difference in average age of winning and losing players between the genders. If we take a look at the average age of winning player 2 in figure (\@ref(fig:age-4)), we can see that the average age of winning player 2 is less for females than males. Similarly, if we consider the average age of losing player 1 in figure (\@ref(fig:age-5)) , we can see that the average age is also less for females than it is for males.
+
 ```{r age}
-
+#selecting only relevant variables
 age <- vb_matches %>%
-  select(w_p1_age,w_p2_age,l_p1_age,l_p2_age)
+  select(gender, w_p1_age,w_p2_age,l_p1_age,l_p2_age)
 
-age_summary <- age %>%
+#summary stats for male player ages
+age_summary_male <- age %>%
+  filter(gender=="M") %>%
   summary()
 
-age_diff <- vb_matches %>%
-  mutate(diff_age_p1=w_p1_age-l_p1_age,
-         diff_age_p2=w_p2_age-l_p2_age)
-  
-age_diff %>%
-  ggplot(aes(diff_age_p1)) +
-  geom_boxplot() +
-  facet_wrap(~gender)
-
-age_diff %>%
-  ggplot(aes(diff_age_p2)) +
-  geom_boxplot() +
-  facet_wrap(~gender)
+#summary stats for female player ages
+age_summary_female <- age %>%
+  filter(gender=="W") %>%
+  summary()
 
 ```
 
-```{r height}
+```{r age-2, fig.cap="Ages of Male Winning Player 1"}
 
+#histogram male winning player 1 ages
+age %>%
+  filter(gender=="M") %>%
+  ggplot() +
+  geom_histogram(aes(w_p1_age),binwidth = 1) +
+  xlab("Ages") +
+  ylab("") +
+  ggtitle("Ages of Male Winning Player 1")
+```
+
+```{r age-3, fig.cap="Ages of Male Losing Player 2"}
+#histogram male losing player 2 ages
+age %>%
+  filter(gender=="M") %>%
+  ggplot() +
+  geom_histogram(aes(l_p2_age),binwidth = 1) +
+  xlab("Ages") +
+  ylab("") +
+  ggtitle("Ages of Male Losing Player 2")
+```
+
+```{r age-4, fig.cap="Ages of Winning Player 2 by gender"}
+
+#boxplot for age gap between genders for winning player 2
+age %>%
+  ggplot(aes(w_p2_age)) +
+  geom_boxplot() +
+  facet_wrap(~gender) +
+  coord_flip() +
+  theme(
+  axis.text.x = element_blank(),
+  axis.ticks = element_blank()) +
+  xlab("Ages") +
+  ggtitle("Ages of Winning Player 2 by gender")
+```
+
+```{r age-5, fig.cap="Ages of Losing Player 1 by gender"}
+
+#boxplot for age gap between genders for losing player 1
+age %>%
+  ggplot(aes(l_p1_age)) +
+  geom_boxplot() +
+  facet_wrap(~gender) +
+  coord_flip() +
+  theme(
+  axis.text.x = element_blank(),
+  axis.ticks = element_blank()) +
+  xlab("Ages") +
+  ggtitle("Ages of Losing Player 1 by gender")
+
+```
+
+
+*What is the average height of a winning team and how does it compare with a losing team?*
+
+The average height for female winning players 1 and 2 are 70.91 and 70.85 inches respectively. The average height for female losing players 1 and 2 are 70.62 and 70.72 inches respectively. Althought the average height for the losing players is less than the height of winning players, it is not a huge difference.
+
+The average height for male winning players 1 and 2 are 76.28 and 76.39 inches respectively, compared to the height for losing players 1 and 2 of 75.98 and 76.15. Consider figures \@ref(fig:male-height-diff-boxplot) and \@ref(fig:female-height-diff-boxplot), which display the difference in heights between winning and losing players 1 (fig.\@ref(fig:male-height-diff-boxplot)) and winning and losing player 2 (fig.\@ref(fig:female-height-diff-boxplot)). In both situations, the means in difference in height are pretty evenly centred around 0. so we probably can't say much to the effect of height difference on winning a volleyball game. We can however see that male volleyball participants are generally taller than female volleyball participants although through commonsense we know this phenomenon is not unique to just volleyball.
+
+```{r height-1}
+
+#selecting relevant variables
 height <- vb_matches %>%
-  select(w_p1_hgt,w_p2_hgt,l_p1_hgt,l_p2_hgt)
+  select(gender,w_p1_hgt,w_p2_hgt,l_p1_hgt,l_p2_hgt)
 
-height_summary <- height %>%
+#female height summary
+height_summary_female <- height %>%
+  filter(gender=="W") %>%
   summary()
 
+#male height summary
+height_summary_male <- height %>%
+  filter(gender=="M") %>%
+  summary()
+```
+
+```{r height-diff}
+
+#creating two new variables measuting difference in height between winning and losing players
 height_diff <- vb_matches %>%
   mutate(diff_hgt_p1=w_p1_hgt-l_p1_hgt,
          diff_hgt_p2=w_p2_hgt-l_p2_hgt)
-  
+```
+
+```{r male-height-diff-boxplot, fig.cap="Difference in Heights of Male Player 1"}
+
+#boxplot for difference in height in male player 1s
 height_diff %>%
+  filter(gender=="M") %>%
   ggplot(aes(diff_hgt_p1)) +
   geom_boxplot() +
-  facet_wrap(~gender)
+  coord_flip() +
+  theme(
+  axis.text.x = element_blank(),
+  axis.ticks = element_blank()) +
+  xlab("Difference in Height (inches)") +
+  ggtitle("Difference in Height")
+```
 
+```{r female-height-diff-boxplot, fig.cap=Difference in Heights of Male Player 2"}
+
+#boxplot for difference in height in male player 2s
 height_diff %>%
+  filter(gender=="M") %>%
   ggplot(aes(diff_hgt_p2)) +
   geom_boxplot() +
-  facet_wrap(~gender)
-
+  coord_flip() +
+  theme(
+  axis.text.x = element_blank(),
+  axis.ticks = element_blank()) +
+  xlab("Difference in Height (inches)") +
+  ggtitle("Difference in Heights of Male Player 2")
 ```
+
 
 # References
