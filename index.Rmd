@@ -25,7 +25,7 @@ library(kableExtra)
 
 Using the data provided on the 'tidytuesday' platform, our **primary** question is to identify the characteristics of a winning beach volleyball team for both males and females. 
 
-We believe that there might be differences in characteristics for a winning team compared to a losing team because of, for example, prevalence of beach volleyball in certain countries. Also, we theorise that taller and younger players may potentially be better at beach volleyball because of the competitive advantage they may have over shorter and more seasoned players.
+We believe that there might be differences in characteristics for a winning team compared to a losing team because of, for example, prevalence of beach volleyball in certain countries. Also, we theorize that taller and younger players may potentially be better at beach volleyball because of the competitive advantage they may have over shorter and more seasoned players.
 
 Therefore, the secondary questions that will help us answer our primary question are:
 
@@ -165,7 +165,7 @@ In order to find our answer to this question, we first did some data wrangling t
 - We rearranged the data to show the total count in descending order and we also renamed the variables to make it more meaningful.
 - Lastly, we saved this as a new data set called "country" to be used later on.
 
-```{r plot-teams, echo=FALSE, fig.cap="Top 20 countries with the most winning teams"}
+```{r plot-teams, echo=FALSE, fig.align = 'center', fig.cap="Top 20 countries with the most winning teams"}
 p1 <- ggplot(country %>% head(20), aes(`Number of teams`, reorder(`Player 1 country`, +`Number of teams`))) +
   geom_bar(stat = "identity", fill = "steelblue") +
   xlab("Number of teams") +
@@ -178,7 +178,7 @@ ggplotly(p1, tooltip = "x")
 ```
 
 
-Figure \@ref(fig:plot-teams) shows the top 20 countries with the most number of winning teams. We can see that the United States was the most dominating country with a total of 4200 winning teams. This means that 8400 players came from the United States and won. In distant second place, Brazil had 258 winning teams, and so 516 Brazilian players won matches. In a close third place, Germany triumphed with 200 winning teams comprising of 500 players. The remaining teams ranged from having 166 winning teams to 45 winning teams.
+Figure \@ref(fig:plot-teams) shows the top 20 countries with the most number of winning teams. We can see that the United States was the most dominating country with a total of 4200 winning teams. This means that at minimum 8400 players came from the United States and won. In distant second place, Brazil had 258 winning teams, and so 516 Brazilian players won matches where both players in the team came from Brazil. In a close third place, Germany triumphed with 200 winning teams comprising of 500 players. The remaining 17 teams in this plot ranged from having 166 winning teams to 45 winning teams.
 
 The clear winner here is United States and we can conclude that majority of the winning players in the AVP and FIVB tournaments hail from the United States.
 
@@ -213,6 +213,7 @@ From looking at the rest of the table, we can see just how popular the United St
 N.B. For the method used to complete this analysis, please refer to the commentary included within the code chunks.
 
 The average age for male winning players 1 and 2 are 29.40 and 29.32 respectively. The average age for male losing players 1 and 2, on the other hand, are 29.08 and 28.95 respectively. There is no obvious bias to winning and losing due to age - as the average age for losers and winners is about the same. 
+
 This might tell us something, however, about the average age of participation in professional male volleyball. If we plot every age of, for instance, male winning player 1 (Figure \@ref(fig:age-2)) and male losing player 2 (Figure \@ref(fig:age-3)) as examples, we see that the most commonly occurring ages are in the late 20s (28-29 year of age). Therefore, it is reasonable to infer that male volleyball players - due to the high levels of participation at those ages -- hit their peak in their late 20s.
 
 Now, let's consider women's volleyball. The average age for female winning players 1 and 2 are 27.98 and 28.29 respectively. The average age for female losing players 1 and 2 are 27.52 and 27.73 respectively. As was the case with the male game, age does not seem to strongly influence winning. However, it is interesting to note that their is a slight difference in average age of winning and losing players between the genders. If we take a look at the average age of winning player 2 in Figure \@ref(fig:age-4), we can see that the average age of winning player 2 is less for females than males. Similarly, if we consider the average age of losing player 1 in Figure \@ref(fig:age-5), we can see that the average age is also less for females than it is for males.
@@ -305,7 +306,7 @@ N.B. For the method used to complete this analysis, please refer to the commenta
 
 The average height for female winning players 1 and 2 are 70.91 and 70.85 inches respectively. The average height for female losing players 1 and 2 are 70.62 and 70.72 inches respectively. Although the average height for the losing players is less than the height of winning players, it is not a huge difference.
 
-The average height for male winning players 1 and 2 are 76.28 and 76.39 inches respectively, compared to the height for losing players 1 and 2 of 75.98 and 76.15 respectively. Consider Figures \@ref(fig:male-height-diff-boxplot) and \@ref(fig:female-height-diff-boxplot), which display the difference in heights between male winning and losing players 1 (Fig. \@ref(fig:male-height-diff-boxplot)) and male winning and losing player 2 (Fig. \@ref(fig:female-height-diff-boxplot)). In both situations, the means in difference in height are pretty evenly centred around 0. so we probably can't say height difference effects winning a volleyball game. We can however say that male volleyball participants are generally taller than female volleyball participants although through common sense we know this phenomenon is not unique to just volleyball.
+The average height for male winning players 1 and 2 are 76.28 and 76.39 inches respectively, compared to the height for losing players 1 and 2 of 75.98 and 76.15 inches respectively. Consider Figures \@ref(fig:male-height-diff-boxplot) and \@ref(fig:female-height-diff-boxplot), which display the difference in heights between male winning and losing players 1 (Fig. \@ref(fig:male-height-diff-boxplot)) and male winning and losing player 2 (Fig. \@ref(fig:female-height-diff-boxplot)). In both situations, the means in difference in height are pretty evenly centred around 0. so we probably can't say height difference effects winning a volleyball game. We can however say that male volleyball participants are generally taller than female volleyball participants although through common sense we know this phenomenon is not unique to just volleyball.
 
 ```{r height-1}
 
@@ -366,9 +367,9 @@ height_diff %>%
 
 # Conclusion
 
-After our analysis, we have concluded that a typical winning male volleyball team probably has both players originating from the United States, with player one having an average age of 29.40 and an average height of 76.28 inches with player two having an average age of 29.32 and an average height of 76.39 inches.
+After our analysis, we have concluded that a typical winning male volleyball team most likely has both players originating from the United States, with player one having an average age of 29.40 and an average height of 76.28 inches with player two having an average age of 29.32 and an average height of 76.39 inches.
 
-In addition, a typical winning female volleyball team probably has both players originating from the United States, with player one having an average age of 27.98 and an average height of 70.91 inches with player two having an average age of 28.29 and an average height of 70.85 inches.
+In addition, a typical winning female volleyball team most likely has both players originating from the United States, with player one having an average age of 27.98 and an average height of 70.91 inches with player two having an average age of 28.29 and an average height of 70.85 inches.
 
 
 # References
