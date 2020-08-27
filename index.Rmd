@@ -13,7 +13,7 @@ output:
 [This assignment is for ETC5521 Assignment 1 by Team `r rmarkdown::metadata$team` comprising of `r knitr::combine_words(rmarkdown::metadata$author)`.]{style="color:#006DAE;"}
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, fig.align = "center")
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 
 library(tidyverse)
 library(plotly)
@@ -55,8 +55,8 @@ What are the characteristics of a winning beach volleyball team for both males a
 **Secondary Questions**
 
 - Which countries have the most winning players?
-- What is the average age of players on a winning team?
-- What is the average height of players on a winning team?
+- What is the average age of players on a winning team and how does it compare with a losing team?
+- What is the average height of players on a winning team and how does it compare with a losing team?
 
 ## Explanation of data being used
 
@@ -165,7 +165,7 @@ In order to find our answer to this question, we first did some data wrangling t
 - We rearranged the data to show the total count in descending order and we also renamed the variables to make it more meaningful.
 - Lastly, we saved this as a new data set called "country" to be used later on.
 
-```{r plot-teams, echo=FALSE, fig.align = "center", fig.cap="Top 20 countries with the most winning teams"}
+```{r plot-teams, echo=FALSE, fig.cap="Top 20 countries with the most winning teams"}
 p1 <- ggplot(country %>% head(20), aes(`Number of teams`, reorder(`Player 1 country`, +`Number of teams`))) +
   geom_bar(stat = "identity", fill = "steelblue") +
   xlab("Number of teams") +
@@ -250,6 +250,7 @@ ggplotly(age_plot, tooltip = "x")
 ```
 
 ```{r age-3, fig.cap="Ages of Male Losing Player 2"}
+
 #creating histogram for male losing player 2 ages
 age_plot_2 <- age %>%
   filter(gender=="M") %>%
@@ -376,6 +377,8 @@ In addition, a typical winning female volleyball team probably has both players 
 Mock, J. (2020, May 19). *rfordatasciene/tidytuesday*. Retrieved August 22, 2020, from 
 https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-05-19/readme.md
 
+R Core Team (2020). R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria. https://www.R-project.org/.
+  
 Sievert, C. (2020). Interactive Web-Based Data Visualization with R, plotly, and
 shiny. Chapman and Hall/CRC Florida.
 
