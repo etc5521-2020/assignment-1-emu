@@ -9,6 +9,13 @@ Team members:
 
 
 
+# ETC5521 Assignment 2 
+
+Team members:
+
+* Abhishek Sinha
+* Yiwen Zhang
+
 
 # Steps
 
