@@ -7,6 +7,9 @@ Team members:
 * Justin Thomas
 * Mayunk Bharadwaj
 
+
+
+
 # Steps
 
 4. Write your data description under the header Data description in `index.Rmd`. A data description should tell the reader the source of the data, and detail the structure of the data, including variables, time frame of collection, collection methods. 
