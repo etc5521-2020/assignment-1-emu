@@ -58,6 +58,11 @@ What are the characteristics of a winning beach volleyball team for both males a
 - What is the average age of players on a winning team and how does it compare with a losing team?
 - What is the average height of players on a winning team and how does it compare with a losing team?
 
+**Additional Questions for Assignment 2**
+
+- What combination of the players are most successful and have teamed up for the greatest number of matches in both the volleyball circuits?
+- Who are the most successful players in beach volleyball and how they have evolved over time and their skills pattern?
+
 ## Explanation of data being used
 
 This data set provides beach volleyball statistics for men's and women's matches at two major tournaments, the Fédération Internationale de Volleyball (FIVB) Beach Volleyball World Championships and the Association of Volleyball Professionals (AVP) tour. The matches are played with teams of 2. In this data set, tournament information, player information, player performance statistics and match results are recorded. The data provided ranges from September 2000 to August 2019 and it has been collected by the data recorded at the tournaments. 
