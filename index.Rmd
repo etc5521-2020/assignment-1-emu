@@ -42,8 +42,20 @@ While going through the dataset, we found that the data was incomplete because t
 # Data description
 
 ```{r data-read-in, include=FALSE}
+vb_matches_na <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-05-19/vb_matches.csv', guess_max = 76000)
+```
 
-vb_matches <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-05-19/vb_matches.csv', guess_max = 76000)
+```{r remove-na}
+vb_matches <- vb_matches_na %>% 
+  drop_na()
+
+vb_matches_AVP <- vb_matches_na %>% 
+  filter(circuit == "AVP")%>% 
+  drop_na()
+
+vb_matches_FIVB <- vb_matches_na %>% 
+  filter(circuit == "FIVB")%>% 
+  drop_na()
 ```
 
 ## Questions
