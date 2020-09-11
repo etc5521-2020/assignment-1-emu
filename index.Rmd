@@ -76,7 +76,12 @@ What are the characteristics of a winning beach volleyball team for both males a
 
 **Additional Questions for Assignment 2**
 
+- Looking into the FVIB circuit, is there any home advantage for winning players?
+
+- Is there any low ranking team beat higher ranking team?
+
 - What combination of the players are most successful and have teamed up for the greatest number of matches in both the volleyball circuits?
+
 - Who are the most successful players in beach volleyball and how they have evolved over time and their skills pattern?
 
 ## Explanation of data being used
