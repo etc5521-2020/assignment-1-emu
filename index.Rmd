@@ -57,9 +57,6 @@ vb_matches_FIVB <- vb_matches_na %>%
   filter(circuit == "FIVB")%>% 
   drop_na()
 
-vb_matches_AVP <- vb_matches_na %>% 
-  filter(circuit == "AVP")%>% 
-  drop_na()
 ```
 
 ## Questions
