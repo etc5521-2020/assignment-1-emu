@@ -33,11 +33,21 @@ Therefore, the secondary questions that will help us answer our primary question
 - What is the average age of players on a winning team?
 - What is the average height of players on a winning team?
 
+Furthermore, We will further explore the individual qualities of individual players in the team to identify the most successful player and the most successful combination. In addition to the physiological quality (height, age) and technical factors, we will also study whether the winning team will be affected by the home advantage. 
+
+After studying the characteristics of the winning team, we will also be very curious about an interesting question. Although the winning team is likely to be a strong team (high ranking ), is there any situation that the low ranking team defeats the high ranking team?
+So, we add four additional questions to complete this analysis:
+
+- Looking into the FVIB circuit, is there any home advantage for winning players?
+- Is there any low ranking team beat higher ranking team?
+- What combination of the players are most successful and have teamed up for the greatest number of matches in both the volleyball circuits?
+- Who are the most successful players in beach volleyball and how they have evolved over time and their skills pattern?
+
 In the following report, the reader will be able to find a description and information about the source and limitations of the data; information on how the data was cleaned; an analysis that will answer the above questions and a conclusion.
 
 ## Limitations of Data Analysis
 
-While going through the dataset, we found that the data was incomplete because there were multiple 'NA' values for individual player performance statistics. As such, observations which featured 'NA' values had to be removed as they were unlikely to be helpful in our analysis.
+While going through the dataset, we found that the data was incomplete because there were multiple 'NA' values for individual player performance statistics. As such, observations which featured 'NA' values had to be removed as they were unlikely to be helpful in our analysis. Due to this, the sample size will be reduced, which means that the accuracy of the research results may be affected to a certain extent.
 
 # Data description
 
