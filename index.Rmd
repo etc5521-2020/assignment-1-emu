@@ -18,6 +18,7 @@ knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 library(tidyverse)
 library(plotly)
 library(kableExtra)
+library(gridExtra)
 ```
 
 
@@ -374,6 +375,9 @@ vb_matches_FIVB_country <- vb_matches_FIVB %>%
   select(`country`,`w_p1_country`,`w_p2_country`,`l_p1_country`,`l_p2_country`) %>%
   filter(country == w_p1_country) 
 
+vb_matches_FIVB_country1 <- vb_matches_FIVB_country %>%
+  filter(country == l_p1_country) 
+
 # count the number of winners who come from the host country
 FIVB_country_win <- vb_matches_FIVB_country %>%
   count(w_p1_country) %>%
@@ -387,10 +391,26 @@ FIVB_country <- vb_matches_FIVB %>%
 #join the data 
 FVIB_win_prop = left_join(x = FIVB_country, y = FIVB_country_win, by="country") %>%
   mutate(w_prop = (num_winner/num_team)*100) 
-
-FVIB_win_prop %>%
-  kable(booktabs = TRUE, caption = "Proportion of winners from host country")
 ```
+
+```{r}
+vb_matches_FIVB_country1 <- vb_matches_FIVB %>%
+  select(`country`,`w_p1_country`,`w_p2_country`,`l_p1_country`,`l_p2_country`) %>%
+  filter(country == l_p1_country) 
+
+# count the number of winners who come from the host country
+FIVB_country_lose <- vb_matches_FIVB_country %>%
+  count(l_p1_country) %>%
+  setNames(c("country","num_loser"))
+
+#join the data 
+FVIB_lose_prop = left_join(x = FIVB_country, y = FIVB_country_lose, by="country") %>%
+  mutate(l_prop = (num_loser/num_team)*100) 
+
+FVIB_prop = left_join(x = FVIB_win_prop, y = FVIB_lose_prop, by="country") %>%
+  select(-`num_team.y`)
+```
+
 
 ```{r}
 ggplot(FVIB_win_prop,
@@ -403,8 +423,74 @@ Significance
 
 
 ## Is there any low ranking team beat higher ranking team?
+In FVIB
+woman:
 ```{r}
+FVIB_rank_W <- vb_matches_FIVB %>%
+  filter(w_rank < l_rank) %>%
+  filter(gender == "W")
 
+FVIB_rank_count_W <- FVIB_rank_W %>%
+  count(country) %>%
+  setNames(c("country","num_rank"))
+
+FIVB_country_W <- vb_matches_FIVB %>%
+  filter(gender == "W") %>%
+  count(country) %>%
+  setNames(c("country","num_team"))
+
+FVIB_rank_prop_W = left_join(x = FVIB_rank_count_W, y = FIVB_country_W, by="country") %>%
+  mutate(rank_prop = (num_rank/num_team)*100) 
+  
+```
+
+man: 
+```{r}
+FVIB_rank_M <- vb_matches_FIVB %>%
+  filter(w_rank < l_rank) %>%
+  filter(gender == "M")
+
+FVIB_rank_count_M <- FVIB_rank_M %>%
+  count(country) %>%
+  setNames(c("country","num_rank"))
+
+FIVB_country_M <- vb_matches_FIVB %>%
+  filter(gender == "M") %>%
+  count(country) %>%
+  setNames(c("country","num_team"))
+
+FVIB_rank_prop_M = left_join(x = FVIB_rank_count_M, y = FIVB_country_M, by="country") %>%
+  mutate(rank_prop = (num_rank/num_team)*100) 
+```
+
+```{r}
+p1 <- FVIB_rank_prop_W %>%
+  ggplot(aes(x = country, y = rank_prop,
+            group = country, color = country)) +
+  geom_point() +
+  ggtitle("Low ranking team beat higher ranking team(Woman)") + 
+  ylab("proportion") +
+  xlab("country") +
+  theme(#axis.title.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank())
+
+ggplotly(p1)
+```
+
+```{r}
+p2 <- FVIB_rank_prop_M %>%
+  ggplot(aes(x = country, y = rank_prop,
+            group = country, color = country)) +
+  geom_point() +
+  ggtitle("Low ranking team beat higher ranking team(Man)") + 
+  ylab("proportion") +
+  xlab("country") +
+  theme(#axis.title.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank())
+
+ggplotly(p2)
 ```
 
 
