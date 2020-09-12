@@ -365,6 +365,49 @@ height_diff %>%
   theme(plot.background = element_rect(fill = "grey93"))
 ```
 
+
+## Looking into the FVIB circuit, is there any home advantage for winning players?
+
+first to see how many winners arre from the host country
+```{r}
+vb_matches_FIVB_country <- vb_matches_FIVB %>%
+  select(`country`,`w_p1_country`,`w_p2_country`,`l_p1_country`,`l_p2_country`) %>%
+  filter(country == w_p1_country) 
+
+# count the number of winners who come from the host country
+FIVB_country_win <- vb_matches_FIVB_country %>%
+  count(w_p1_country) %>%
+  setNames(c("country","num_winner"))
+
+# count the number of teams participate in the game
+FIVB_country <- vb_matches_FIVB %>%
+  count(country) %>%
+  setNames(c("country","num_team"))
+
+#join the data 
+FVIB_win_prop = left_join(x = FIVB_country, y = FIVB_country_win, by="country") %>%
+  mutate(w_prop = (num_winner/num_team)*100) 
+
+FVIB_win_prop %>%
+  kable(booktabs = TRUE, caption = "Proportion of winners from host country")
+```
+
+```{r}
+ggplot(FVIB_win_prop,
+       aes(x= country, 
+           y = w_prop, group = country, color = country)) +
+  geom_point()
+```
+
+Significance
+
+
+## Is there any low ranking team beat higher ranking team?
+```{r}
+
+```
+
+
 # Conclusion
 
 After our analysis, we have concluded that a typical winning male volleyball team most likely has both players originating from the United States, with player one having an average age of 29.40 and an average height of 76.28 inches with player two having an average age of 29.32 and an average height of 76.39 inches.
