@@ -501,8 +501,6 @@ But in any case, the United States has the most home winning rate, that is becau
 
 ## Is there any low ranking team beat higher ranking team?
 
-In FVIB
-
 Through the analysis, we can know that the winning team may be a strong team, but is there any situation that the low ranking team defeats the higher one?
 First, I focus on FVIB tournament, and filter the matches in which the low ranking team defeated the higher one for women. And then compute the number of these matches and save it as variable "num_rank" . After that, I compute the total number of matched host in every country each year and save it as variable "num_total". Next, I join these two tables together to calculate the proportion of teams with low ranking but defeating the higher one. Finally, I divide "num_rank" by "num_total" to get the results.Second, I use the same method as above to compute the rate for men.
 
