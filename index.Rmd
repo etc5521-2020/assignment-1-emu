@@ -390,14 +390,14 @@ FVIB_win_prop = left_join(x = FIVB_country, y = FIVB_country_win, by="country") 
   mutate(win_rate = (num_winner/num_total)*100) 
 ```
 
-```{r table-win}
+```{r table-total}
 FVIB_win_prop %>%
   kable(booktabs = TRUE, caption = "Home winning rate for all team") 
 ```
 
 
 ```{r plot-win, fig.cap="Home winning rate for all team"}
-ggplot(FVIB_win_prop, aes(x=reorder(country,win_rate), y =  win_rate)) +
+ ggplot(FVIB_win_prop, aes(x=reorder(country,win_rate), y =  win_rate)) +
   geom_bar(position = 'dodge',stat="identity",fill = '#619CFF') +
    geom_text(aes(label= round(win_rate)) , position=position_dodge(width=1),hjust = 0.000001)+
   ggtitle("Home winning rate for all team") +
@@ -409,6 +409,7 @@ ggplot(FVIB_win_prop, aes(x=reorder(country,win_rate), y =  win_rate)) +
   theme(panel.background = element_blank()) +
   theme(plot.title = element_text(hjust=-0.5))+
   coord_flip() 
+
 ```
 
 For woman:
@@ -434,11 +435,25 @@ win_prop_W = left_join(x = FIVB_country_W, y = FIVB_win_W, by="country") %>%
   mutate(win_rate = (num_winner/num_total)*100)
 ```
 
-```{r}
+```{r table-W}
 win_prop_W %>%
   kable(booktabs = TRUE, caption = "Home winning rate for Woman")
 ```
 
+```{r plot-W, fig.cap="Home winning rate for Woman"}
+pw <-  ggplot(win_prop_W,
+       aes(x= country, 
+           y = win_rate, group = country, color = country)) +
+  geom_point() +
+  ggtitle("Home winning rate for Woman") + 
+  ylab("proportion") +
+  xlab("country") +
+  theme(#axis.title.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank())
+
+ggplotly(pw)
+```
 
 For man:
 ```{r}
@@ -463,11 +478,25 @@ win_prop_M = left_join(x = FIVB_country_M, y = FIVB_win_M, by="country") %>%
   mutate(win_rate = (num_winner/num_total)*100) 
 ```
 
-```{r}
+```{r table-M}
 win_prop_M %>%
   kable(booktabs = TRUE, caption = "Home winning rate for Man") 
 ```
 
+```{r  plot-M, fig.cap="Home winning rate for Man"}
+pm <-  ggplot(win_prop_M,
+       aes(x= country, 
+           y = win_rate, group = country, color = country)) +
+  geom_point() +
+  ggtitle("Home winning rate for Wan") + 
+  ylab("proportion") +
+  xlab("country") +
+  theme(#axis.title.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank())
+
+ggplotly(pm)
+```
 
 
 ## Is there any low ranking team beat higher ranking team?
