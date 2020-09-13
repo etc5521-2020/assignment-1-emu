@@ -52,12 +52,7 @@ While going through the dataset, we found that the data was incomplete because t
 
 # Data description
 
-<<<<<<< HEAD
-```{r data-read-in, include=FALSE}
-=======
 ```{r data-read-in, include=FALSE,cache=TRUE}
-
->>>>>>> Yiwen_Zhang
 vb_matches_na <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-05-19/vb_matches.csv', guess_max = 76000)
 ```
 
@@ -450,8 +445,6 @@ Looking into Figure \@ref(fig:plot-win), it can be observed that in all the eigh
 
 ```
 
-
-
 ```{r}
 win_country_W <- vb_matches_FIVB %>%
   select(`country`,`gender`,`w_p1_country`,`w_p2_country`,`l_p1_country`,`l_p2_country`) %>%
@@ -537,6 +530,7 @@ General speaking, home advantage is not tenable for the winning team in FVIB tou
 
 In addition, we can also see that no men's team in England and Greece has ever won, which may indicate that the strength of men's beach volleyball in these two countries is not enough or is not attached much attention to.
 But in any case, the United States has the most home winning rate, that is because it has the most winning teams as explained previously.
+
 
 ## Is there any low ranking team beat higher ranking team?
 
