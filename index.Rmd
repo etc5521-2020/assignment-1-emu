@@ -367,62 +367,111 @@ height_diff %>%
 ```
 
 
-## Looking into the FVIB circuit, is there any home advantage for winning players?
+## Looking into the FVIB circuit, is there any home advantage for winning team?
 
-first to see how many winners arre from the host country
+first to see the home winning rate regardless of gender:
 ```{r}
 vb_matches_FIVB_country <- vb_matches_FIVB %>%
   select(`country`,`w_p1_country`,`w_p2_country`,`l_p1_country`,`l_p2_country`) %>%
   filter(country == w_p1_country) 
 
-vb_matches_FIVB_country1 <- vb_matches_FIVB_country %>%
-  filter(country == l_p1_country) 
-
-# count the number of winners who come from the host country
+# count the number of matched with winners from the host country
 FIVB_country_win <- vb_matches_FIVB_country %>%
   count(w_p1_country) %>%
   setNames(c("country","num_winner"))
 
-# count the number of teams participate in the game
+# count the number of matches host in every country each year
 FIVB_country <- vb_matches_FIVB %>%
   count(country) %>%
-  setNames(c("country","num_team"))
+  setNames(c("country","num_total"))
 
 #join the data 
 FVIB_win_prop = left_join(x = FIVB_country, y = FIVB_country_win, by="country") %>%
-  mutate(w_prop = (num_winner/num_team)*100) 
+  mutate(win_rate = (num_winner/num_total)*100) 
 ```
 
-```{r}
-vb_matches_FIVB_country1 <- vb_matches_FIVB %>%
-  select(`country`,`w_p1_country`,`w_p2_country`,`l_p1_country`,`l_p2_country`) %>%
-  filter(country == l_p1_country) 
+```{r table-win}
+FVIB_win_prop %>%
+  kable(booktabs = TRUE, caption = "Home winning rate for all team") 
+```
 
-# count the number of winners who come from the host country
-FIVB_country_lose <- vb_matches_FIVB_country %>%
-  count(l_p1_country) %>%
-  setNames(c("country","num_loser"))
+
+```{r plot-win, fig.cap="Home winning rate for all team"}
+ggplot(FVIB_win_prop, aes(x=reorder(country,win_rate), y =  win_rate)) +
+  geom_bar(position = 'dodge',stat="identity",fill = '#619CFF') +
+   geom_text(aes(label= round(win_rate)) , position=position_dodge(width=1),hjust = 0.000001)+
+  ggtitle("Home winning rate for all team") +
+  theme(plot.background = element_rect(fill = "#f0f0f0")) +
+  scale_y_continuous(breaks=NULL) +
+  xlab("country")+
+  ylab("proportion")+
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
+  theme(panel.background = element_blank()) +
+  theme(plot.title = element_text(hjust=-0.5))+
+  coord_flip() 
+```
+
+For woman:
+```{r}
+win_country_W <- vb_matches_FIVB %>%
+  select(`country`,`gender`,`w_p1_country`,`w_p2_country`,`l_p1_country`,`l_p2_country`) %>%
+  filter(country == w_p1_country) %>%
+  filter(gender == "W")
+
+# count the number of matched with winners from the host country
+FIVB_win_W <- win_country_W %>%
+  count(w_p1_country) %>%
+  setNames(c("country","num_winner"))
+
+# count the number of matches host in every country each year
+FIVB_country_W <- vb_matches_FIVB %>%
+  filter(gender == "W") %>%
+  count(country) %>%
+  setNames(c("country","num_total"))
 
 #join the data 
-FVIB_lose_prop = left_join(x = FIVB_country, y = FIVB_country_lose, by="country") %>%
-  mutate(l_prop = (num_loser/num_team)*100) 
-
-FVIB_prop = left_join(x = FVIB_win_prop, y = FVIB_lose_prop, by="country") %>%
-  select(-`num_team.y`)
+win_prop_W = left_join(x = FIVB_country_W, y = FIVB_win_W, by="country") %>%
+  mutate(win_rate = (num_winner/num_total)*100)
 ```
-
 
 ```{r}
-ggplot(FVIB_win_prop,
-       aes(x= country, 
-           y = w_prop, group = country, color = country)) +
-  geom_point()
+win_prop_W %>%
+  kable(booktabs = TRUE, caption = "Home winning rate for Woman")
 ```
 
-Significance
+
+For man:
+```{r}
+win_country_M <- vb_matches_FIVB %>%
+  select(`country`,`gender`,`w_p1_country`,`w_p2_country`,`l_p1_country`,`l_p2_country`) %>%
+  filter(country == w_p1_country) %>%
+  filter(gender == "M")
+
+# count the number of matched with winners from the host country
+FIVB_win_M <- win_country_M %>%
+  count(w_p1_country) %>%
+  setNames(c("country","num_winner"))
+
+# count the number of matches host in every country each year
+FIVB_country_M <- vb_matches_FIVB %>%
+  filter(gender == "M") %>%
+  count(country) %>%
+  setNames(c("country","num_total"))
+
+#join the data 
+win_prop_M = left_join(x = FIVB_country_M, y = FIVB_win_M, by="country") %>%
+  mutate(win_rate = (num_winner/num_total)*100) 
+```
+
+```{r}
+win_prop_M %>%
+  kable(booktabs = TRUE, caption = "Home winning rate for Man") 
+```
+
 
 
 ## Is there any low ranking team beat higher ranking team?
+
 In FVIB
 woman:
 ```{r}
