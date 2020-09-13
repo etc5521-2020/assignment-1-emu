@@ -371,7 +371,7 @@ height_diff %>%
 
 In team sports, the term home advantage describes the benefit that the home team is said to gain over the visiting team. This is because the home team will be more adaptable to the weather, temperature and other natural factors in the competition area. Additionally, there will be no jet lag problem, and there will also be a sense of security on the psychological level. Therefore, home advantage is a frequently mentioned topic in sports competitions. This time is no exception, we will also be curious whether the winning team of beach volleyball will have home advantage, which will be analyzed as followed.
 
-Firstly, let's see the home winning rate regardless of gender. I select the observations that has country where tournament played equal the country where winner is from. And then compute the number of these matches and save it as variable "num_winner" . After that, I compute the total number of matched host in every country each year and save it as variable "num_total". Finally, I divide "num_winner" by "num_total" to get the winning rate regardless gender.
+Firstly, let's see the home winning rate regardless of gender. I select the observations that has country where tournament played equal the country where winner is from. And then compute the number of these matches and save it as variable "num_winner" . After that, I compute the total number of matched host in every country each year and save it as variable "num_total". Next, I join these two tables together to calculate the winning rate. Finally, I divide "num_winner" by "num_total" to get the winning rate regardless gender.
 
 After getting the results, I make a bar plot to show this with a descending order.
 
@@ -502,8 +502,12 @@ But in any case, the United States has the most home winning rate, that is becau
 ## Is there any low ranking team beat higher ranking team?
 
 In FVIB
-woman:
+
+Through the analysis, we can know that the winning team may be a strong team, but is there any situation that the low ranking team defeats the higher one?
+First, I focus on FVIB tournament, and filter the matches in which the low ranking team defeated the higher one for women. And then compute the number of these matches and save it as variable "num_rank" . After that, I compute the total number of matched host in every country each year and save it as variable "num_total". Next, I join these two tables together to calculate the proportion of teams with low ranking but defeating the higher one. Finally, I divide "num_rank" by "num_total" to get the results.Second, I use the same method as above to compute the rate for men.
+
 ```{r}
+# FVIB  for women 
 FVIB_rank_W <- vb_matches_FIVB %>%
   filter(w_rank < l_rank) %>%
   filter(gender == "W")
@@ -515,15 +519,16 @@ FVIB_rank_count_W <- FVIB_rank_W %>%
 FIVB_country_W <- vb_matches_FIVB %>%
   filter(gender == "W") %>%
   count(country) %>%
-  setNames(c("country","num_team"))
+  setNames(c("country","num_total"))
 
 FVIB_rank_prop_W = left_join(x = FVIB_rank_count_W, y = FIVB_country_W, by="country") %>%
-  mutate(rank_prop = (num_rank/num_team)*100) 
+  mutate(rank_prop = (num_rank/num_total)*100) 
   
 ```
 
-man: 
+
 ```{r}
+#FVIB for men
 FVIB_rank_M <- vb_matches_FIVB %>%
   filter(w_rank < l_rank) %>%
   filter(gender == "M")
@@ -535,13 +540,16 @@ FVIB_rank_count_M <- FVIB_rank_M %>%
 FIVB_country_M <- vb_matches_FIVB %>%
   filter(gender == "M") %>%
   count(country) %>%
-  setNames(c("country","num_team"))
+  setNames(c("country","num_total"))
 
 FVIB_rank_prop_M = left_join(x = FVIB_rank_count_M, y = FIVB_country_M, by="country") %>%
-  mutate(rank_prop = (num_rank/num_team)*100) 
+  mutate(rank_prop = (num_rank/num_total)*100) 
 ```
 
-```{r}
+In Figure \@ref(fig:plot-WR), it can be seen that tournament in Norway has the most proportion of team defeating teams higher than them at about 63.63%, and the lowest tournament is in England at 47.92%. Most of the tournaments have over half teams defeating the higher ranked teams.
+
+```{r plot-WR, fig.cap="Low ranking team beat higher ranking team(Woman FVIB)"}
+#plot for women in FVIB
 pWR <- FVIB_rank_prop_W %>%
   ggplot(aes(x = country, y = rank_prop,
             group = country, color = country)) +
@@ -555,8 +563,12 @@ pWR <- FVIB_rank_prop_W %>%
 
 ggplotly(pWR)
 ```
+Figure \@ref(fig:plot-MR) shows the results of men. The tournament in Greece had about 63.46% teams defeating higher ranked one. The only two that was not over 50% are Brazil and China with proportion at 44.44% and 47.92%. Similar to women, most tournament for men had over half team defeating higher ranked one.
 
-```{r}
+However, we could also recognize that this proportion of women is greater than that of men for most countries, which indicates that the overall strength of the women's team is stronger than that of the men's team. But there is an outlier - England, in which the men performed better than women with a higher proportion at 50%. This may indicate that men's beach volleyball is stronger in the UK.
+
+```{r plot-MR, fig.cap="Low ranking team beat higher ranking team(Man FVIB)"}
+#plot for men in FVIB
 pMR <- FVIB_rank_prop_M %>%
   ggplot(aes(x = country, y = rank_prop,
             group = country, color = country)) +
@@ -571,7 +583,8 @@ pMR <- FVIB_rank_prop_M %>%
 ggplotly(pMR)
 ```
 
-In AVP
+
+Then, it comes to the AVP tournament. I use the same method applied in the analysis of FVIB. But in order to display the women and men rate in one plot, I manually create a tibble that only contains the gender and the rate value. As the host country in AVP is all America, I ignore the country variable. I also draw a plot to represent the results.
 
 ```{r}
 AVP_rank_W <- vb_matches_AVP %>%
@@ -585,10 +598,10 @@ AVP_rank_count_W <- AVP_rank_W %>%
 AVP_country_W <- vb_matches_AVP %>%
   filter(gender == "W") %>%
   count(country) %>%
-  setNames(c("country","num_team"))
+  setNames(c("country","num_total"))
 
 AVP_rank_prop_W = left_join(x = AVP_rank_count_W, y = AVP_country_W, by="country") %>%
-  mutate(rank_prop = (num_rank/num_team)*100) 
+  mutate(rank_prop = (num_rank/num_total)*100) 
   
 ```
 
@@ -604,10 +617,10 @@ AVP_rank_count_M <- AVP_rank_M %>%
 AVP_country_M <- vb_matches_AVP %>%
   filter(gender == "W") %>%
   count(country) %>%
-  setNames(c("country","num_team"))
+  setNames(c("country","num_total"))
 
 AVP_rank_prop_M = left_join(x = AVP_rank_count_M, y = AVP_country_M, by="country") %>%
-  mutate(rank_prop = (num_rank/num_team)*100) 
+  mutate(rank_prop = (num_rank/num_total)*100) 
 ```
 
 ```{r}
@@ -620,7 +633,9 @@ rank_prop_com <- tribble(
 
 ```
 
-```{r}
+In Figure \@ref(fig:plot-RA), the bar chart on the left side is the rate of men with the right-side one showing the rate of women team. It can be observed that the rate of men is about 50.25%, and the rate of women is around 51.15%. We can see that in the AVP competition, the gender difference is not obvious. Similarly, more than half of the teams can beat the higher ranked teams.
+
+```{r plot-RA}
 pra <- ggplot(rank_prop_com, aes(x=reorder(gender,rank_prop), y =  rank_prop)) +
   geom_bar(stat="identity",fill = 'purple', color = "pink") +
   ggtitle("Low ranking team beat higher ranking team (AVP)") + 
@@ -631,7 +646,7 @@ pra <- ggplot(rank_prop_com, aes(x=reorder(gender,rank_prop), y =  rank_prop)) +
 
 ggplotly(pra)
 ```
-
+Generally speaking, the situation that the lower ranked teams beat the higher ranked teams accounts for more than half of the total in both FVIB and AVP tournaments. Therefore, we can say that it is not uncommon for low ranking teams to beat high ranked ones in beach volleyball. It also indirectly indicates that ranking in beach volleyball competition may not fully reflect the strength and winning rate of a team.
 
 
 # Conclusion
