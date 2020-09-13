@@ -42,9 +42,23 @@ While going through the dataset, we found that the data was incomplete because t
 
 # Data description
 
-```{r data-read-in, include=FALSE}
+```{r data-read-in, include=FALSE,cache=TRUE}
 
-vb_matches <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-05-19/vb_matches.csv', guess_max = 76000)
+vb_matches_na <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-05-19/vb_matches.csv', guess_max = 76000)
+```
+
+```{r remove-na}
+vb_matches <- vb_matches_na %>% 
+  drop_na()
+
+vb_matches_AVP <- vb_matches_na %>% 
+  filter(circuit == "AVP")%>% 
+  drop_na()
+
+vb_matches_FIVB <- vb_matches_na %>% 
+  filter(circuit == "FIVB")%>% 
+  drop_na()
+
 ```
 
 ## Questions
@@ -352,7 +366,7 @@ height_diff %>%
 
 ```{r female-height-diff-boxplot, fig.cap="Difference in Heights of Male Player 2"}
 
-#creating boxplot for difference in height in male player 2s
+#creating box-plot for difference in height in male player 2s
 height_diff %>%
   filter(gender=="M") %>%
   ggplot(aes(diff_hgt_p2)) +
@@ -371,7 +385,7 @@ height_diff %>%
 
 In team sports, the term home advantage describes the benefit that the home team is said to gain over the visiting team. This is because the home team will be more adaptable to the weather, temperature and other natural factors in the competition area. Additionally, there will be no jet lag problem, and there will also be a sense of security on the psychological level. Therefore, home advantage is a frequently mentioned topic in sports competitions. This time is no exception, we will also be curious whether the winning team of beach volleyball will have home advantage, which will be analyzed as followed.
 
-Firstly, let's see the home winning rate regardless of gender. I select the observations that has country where tournament played equal the country where winner is from. And then compute the number of these matches and save it as variable "num_winner" . After that, I compute the total number of matched host in every country each year and save it as variable "num_total". Next, I join these two tables together to calculate the winning rate. Finally, I divide "num_winner" by "num_total" to get the winning rate regardless gender.
+Firstly, since the host country and contestant's country in AVP competition is almost the United States, it is meaningless to discuss this issue, so I only choose the data of FVIB competition as the object. Then let's see the home winning rate regardless of gender. I select the observations that has country where tournament played equal the country where winner is from. And then compute the number of these matches and save it as variable "num_winner". After that, I compute the total number of matched host in every country each year and save it as variable "num_total". Next, I join these two tables together to calculate the winning rate. Finally, I divide "num_winner" by "num_total" to get the winning rate regardless gender.
 
 After getting the results, I make a bar plot to show this with a descending order.
 
@@ -395,7 +409,7 @@ FVIB_win_prop = left_join(x = FIVB_country, y = FIVB_country_win, by="country") 
   mutate(win_rate = (num_winner/num_total)*100) 
 ```
 
-Looking into Figure \@ref(fig:plot-win), it can be observed that in all the eight years, although team of United States has the highest winning rate at 36 percentage, all the winning rate at home is less than 50%, that is to say, the winning rate at home is not higher than that at away, which shows that the home advantage is not obvious in FVIB competition.
+Looking into Figure \@ref(fig:plot-win), it can be observed that in all the eight years, although team of United States has the highest winning rate at `r max(FVIB_win_prop$win_rate)`%, all the winning rate at home is less than fifty percentatge, that is to say, the winning rate at home is not higher than that at away, which shows that the home advantage is not obvious in FVIB competition.
 
 ```{r plot-win, fig.cap="Home winning rate for all team"}
  ggplot(FVIB_win_prop, aes(x=reorder(country,win_rate), y =  win_rate)) +
@@ -408,14 +422,11 @@ Looking into Figure \@ref(fig:plot-win), it can be observed that in all the eigh
   ylab("proportion")+
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
   theme(panel.background = element_blank()) +
-  theme(plot.title = element_text(hjust=-0.5))+
   coord_flip() 
 
 ```
 
-Although the home court advantage is not obvious for the winning team in general, is there any difference between the winning teams of different genders?
 
-Then we comes to women's team. On the basis of the previous part of the method, I added gender screening with screening the teams only for female gender, and calculated the home winning rate, then displayed the results in Figure \@ref(fig:plot-W). It can be seen that with the United States having the highest rate at 39.56%, all of the teams don't have rates over 50%, quite same as the general situation. That indicates that home advantage is still not obvious in women's team.
 
 ```{r}
 win_country_W <- vb_matches_FIVB %>%
@@ -439,13 +450,16 @@ win_prop_W = left_join(x = FIVB_country_W, y = FIVB_win_W, by="country") %>%
   mutate(win_rate = (num_winner/num_total)*100)
 ```
 
+Although the home court advantage is not obvious for the winning team in general, is there any difference between the winning teams of different genders?
+
+Then we comes to women's team. On the basis of the previous part of the method, I added gender screening with screening the teams only for female gender, and calculated the home winning rate, then displayed the results in Figure \@ref(fig:plot-W). It can be seen that with the United States having the highest rate at `r max(win_prop_W$win_rate)`%, all of the teams don't have rates over fifty percent, quite same as the general situation. That indicates that home advantage is still not obvious in women's team.
 
 ```{r plot-W, fig.cap="Home winning rate for Woman"}
 pw <-  ggplot(win_prop_W,
-       aes(x= country, 
-           y = win_rate, group = country, color = country)) +
-  geom_point() +
+       aes(country,win_rate, fill = country)) +
+  geom_bar(stat = "identity")+
   ggtitle("Home winning rate for Woman") + 
+  #scale_fill_brewer(palette = "Blues")+
   ylab("proportion") +
   xlab("country") +
   theme(#axis.title.x = element_blank(),
@@ -455,7 +469,6 @@ pw <-  ggplot(win_prop_W,
 ggplotly(pw)
 ```
 
-Using the same method of screening women's teams, the teams whose gender is only male are selected and the winning rate at home is calculated after that. The results are shown in Figure \@ref(fig:plot-M). It is quite interesting that the home advantage is also not obvious in men, even if the highest rate is reached 32.41% by United States.
 
 ```{r}
 win_country_M <- vb_matches_FIVB %>%
@@ -479,11 +492,13 @@ win_prop_M = left_join(x = FIVB_country_M, y = FIVB_win_M, by="country") %>%
   mutate(win_rate = (num_winner/num_total)*100) 
 ```
 
+Using the same method of screening women's teams, the teams whose gender is only male are selected and the winning rate at home is calculated after that. The results are shown in Figure \@ref(fig:plot-M). It is quite interesting that the home advantage is also not obvious in men, even if the highest rate is reached `r win_prop_M$win_rate[8]`% by United States.
+
 ```{r  plot-M, fig.cap="Home winning rate for Man"}
 pm <-  ggplot(win_prop_M,
        aes(x= country, 
-           y = win_rate, group = country, color = country)) +
-  geom_point() +
+           y = win_rate, fill = country)) +
+  geom_bar(stat = "identity") +
   ggtitle("Home winning rate for Man") + 
   ylab("proportion") +
   xlab("country") +
@@ -494,7 +509,7 @@ pm <-  ggplot(win_prop_M,
 ggplotly(pm)
 ```
 
-General speaking, home advantage is not tenable for the winning team in FVIB tournament, regardless of gender. However, if we look further, we can find that the winning rate of women at home is higher than that of men in most countries, with the exception of Poland, where the winning rate of men at home is 9.68% higher than that of women's 4.26%. 
+General speaking, home advantage is not tenable for the winning team in FVIB tournament, regardless of gender. However, if we look further, we can find that the winning rate of women at home is higher than that of men in most countries, with the exception of Poland, where the winning rate of men at home is `r win_prop_M$win_rate[7]`% higher than that of women's `r win_prop_W$win_rate[7]`%. 
 
 In addition, we can also see that no men's team in England and Greece has ever won, which may indicate that the strength of men's beach volleyball in these two countries is not enough or is not attached much attention to.
 But in any case, the United States has the most home winning rate, that is because it has the most winning teams as explained previously.
@@ -544,7 +559,7 @@ FVIB_rank_prop_M = left_join(x = FVIB_rank_count_M, y = FIVB_country_M, by="coun
   mutate(rank_prop = (num_rank/num_total)*100) 
 ```
 
-In Figure \@ref(fig:plot-WR), it can be seen that tournament in Norway has the most proportion of team defeating teams higher than them at about 63.63%, and the lowest tournament is in England at 47.92%. Most of the tournaments have over half teams defeating the higher ranked teams.
+In Figure \@ref(fig:plot-WR), it can be seen that tournament in Italy has the most proportion of team defeating teams higher than them at about `r max(FVIB_rank_prop_W$rank_prop)`%, and the lowest tournament is in England at `r min(FVIB_rank_prop_W$rank_prop)`%. Most of the tournaments have over half teams defeating the higher ranked teams.
 
 ```{r plot-WR, fig.cap="Low ranking team beat higher ranking team(Woman FVIB)"}
 #plot for women in FVIB
@@ -561,9 +576,10 @@ pWR <- FVIB_rank_prop_W %>%
 
 ggplotly(pWR)
 ```
-Figure \@ref(fig:plot-MR) shows the results of men. The tournament in Greece had about 63.46% teams defeating higher ranked one. The only two that was not over 50% are Brazil and China with proportion at 44.44% and 47.92%. Similar to women, most tournament for men had over half team defeating higher ranked one.
 
-However, we could also recognize that this proportion of women is greater than that of men for most countries, which indicates that the overall strength of the women's team is stronger than that of the men's team. But there is an outlier - England, in which the men performed better than women with a higher proportion at 50%. This may indicate that men's beach volleyball is stronger in the UK.
+Figure \@ref(fig:plot-MR) shows the results of men. The tournament in Greece had about `r max(FVIB_rank_prop_M$rank_prop)`% teams defeating higher ranked one. The only two that was not over fifty percent are Brazil and China with proportion at `r FVIB_rank_prop_M$rank_prop[1]`% and `r FVIB_rank_prop_M$rank_prop[2]`%. Similar to women, most tournament for men had over half team defeating higher ranked one.
+
+However, we could also recognize that this proportion of women is greater than that of men for most countries, which indicates that the overall strength of the women's team is stronger than that of the men's team. But there is an outlier - England, in which the men performed better than women with a higher proportion at `r FVIB_rank_prop_M$rank_prop[3]`%. This may indicate that men's beach volleyball is stronger in the UK.
 
 ```{r plot-MR, fig.cap="Low ranking team beat higher ranking team(Man FVIB)"}
 #plot for men in FVIB
@@ -580,7 +596,6 @@ pMR <- FVIB_rank_prop_M %>%
 
 ggplotly(pMR)
 ```
-
 
 Then, it comes to the AVP tournament. I use the same method applied in the analysis of FVIB. But in order to display the women and men rate in one plot, I manually create a tibble that only contains the gender and the rate value. As the host country in AVP is all America, I ignore the country variable. I also draw a plot to represent the results.
 
@@ -631,11 +646,11 @@ rank_prop_com <- tribble(
 
 ```
 
-In Figure \@ref(fig:plot-RA), the bar chart on the left side is the rate of men with the right-side one showing the rate of women team. It can be observed that the rate of men is about 50.25%, and the rate of women is around 51.15%. We can see that in the AVP competition, the gender difference is not obvious. Similarly, more than half of the teams can beat the higher ranked teams.
+In Figure \@ref(fig:plot-RA), the bar chart on the left side is the rate of men with the right-side one showing the rate of women team. It can be observed that the rate of men is about `r min(rank_prop_com$rank_prop)`%, and the rate of women is around `r max(rank_prop_com$rank_prop)`%. We can see that in the AVP competition, the gender difference is not obvious. Similarly, more than half of the teams can beat the higher ranked teams.
 
-```{r plot-RA}
+```{r plot-RA,fig.cap="Low ranking team beat higher ranking team (AVP)"}
 pra <- ggplot(rank_prop_com, aes(x=reorder(gender,rank_prop), y =  rank_prop)) +
-  geom_bar(stat="identity",fill = 'purple', color = "pink") +
+  geom_bar(stat="identity",fill = 'purple', color = "pink",width=0.3) +
   ggtitle("Low ranking team beat higher ranking team (AVP)") + 
   ylab("Rate") +
   theme(axis.title.x = element_blank(),
@@ -644,6 +659,7 @@ pra <- ggplot(rank_prop_com, aes(x=reorder(gender,rank_prop), y =  rank_prop)) +
 
 ggplotly(pra)
 ```
+
 Generally speaking, the situation that the lower ranked teams beat the higher ranked teams accounts for more than half of the total in both FVIB and AVP tournaments. Therefore, we can say that it is not uncommon for low ranking teams to beat high ranked ones in beach volleyball. It also indirectly indicates that ranking in beach volleyball competition may not fully reflect the strength and winning rate of a team.
 
 
