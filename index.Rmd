@@ -369,13 +369,18 @@ height_diff %>%
 
 ## Looking into the FVIB circuit, is there any home advantage for winning team?
 
-first to see the home winning rate regardless of gender:
+In team sports, the term home advantage describes the benefit that the home team is said to gain over the visiting team. This is because the home team will be more adaptable to the weather, temperature and other natural factors in the competition area. Additionally, there will be no jet lag problem, and there will also be a sense of security on the psychological level. Therefore, home advantage is a frequently mentioned topic in sports competitions. This time is no exception, we will also be curious whether the winning team of beach volleyball will have home advantage, which will be analyzed as followed.
+
+Firstly, let's see the home winning rate regardless of gender. I select the observations that has country where tournament played equal the country where winner is from. And then compute the number of these matches and save it as variable "num_winner" . After that, I compute the total number of matched host in every country each year and save it as variable "num_total". Finally, I divide "num_winner" by "num_total" to get the winning rate regardless gender.
+
+Table \@ref(tab:table-total) shows the results. And then I make a bar plot to show this with a descending order.
+
 ```{r}
 vb_matches_FIVB_country <- vb_matches_FIVB %>%
   select(`country`,`w_p1_country`,`w_p2_country`,`l_p1_country`,`l_p2_country`) %>%
   filter(country == w_p1_country) 
 
-# count the number of matched with winners from the host country
+# count the number of matches with winners from the host country
 FIVB_country_win <- vb_matches_FIVB_country %>%
   count(w_p1_country) %>%
   setNames(c("country","num_winner"))
@@ -395,6 +400,7 @@ FVIB_win_prop %>%
   kable(booktabs = TRUE, caption = "Home winning rate for all team") 
 ```
 
+Looking into Figure \@ref(fig:plot-win), it can be observed that in all the eight years, although team of United States has the highest winning rate at 36 percentage, all the winning rate at home is less than 50%, that is to say, the winning rate at home is not higher than that at away, which shows that the home advantage is not obvious in FVIB competition.
 
 ```{r plot-win, fig.cap="Home winning rate for all team"}
  ggplot(FVIB_win_prop, aes(x=reorder(country,win_rate), y =  win_rate)) +
