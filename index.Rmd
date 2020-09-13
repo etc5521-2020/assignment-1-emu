@@ -542,34 +542,96 @@ FVIB_rank_prop_M = left_join(x = FVIB_rank_count_M, y = FIVB_country_M, by="coun
 ```
 
 ```{r}
-p1 <- FVIB_rank_prop_W %>%
+pWR <- FVIB_rank_prop_W %>%
   ggplot(aes(x = country, y = rank_prop,
             group = country, color = country)) +
   geom_point() +
-  ggtitle("Low ranking team beat higher ranking team(Woman)") + 
+  ggtitle("Low ranking team beat higher ranking team(Woman FVIB)") + 
   ylab("proportion") +
   xlab("country") +
   theme(#axis.title.x = element_blank(),
         axis.text.x = element_blank(),
         axis.ticks.x = element_blank())
 
-ggplotly(p1)
+ggplotly(pWR)
 ```
 
 ```{r}
-p2 <- FVIB_rank_prop_M %>%
+pMR <- FVIB_rank_prop_M %>%
   ggplot(aes(x = country, y = rank_prop,
             group = country, color = country)) +
   geom_point() +
-  ggtitle("Low ranking team beat higher ranking team(Man)") + 
+  ggtitle("Low ranking team beat higher ranking team(Man FVIB)") + 
   ylab("proportion") +
   xlab("country") +
   theme(#axis.title.x = element_blank(),
         axis.text.x = element_blank(),
         axis.ticks.x = element_blank())
 
-ggplotly(p2)
+ggplotly(pMR)
 ```
+
+In AVP
+
+```{r}
+AVP_rank_W <- vb_matches_AVP %>%
+  filter(w_rank < l_rank) %>%
+  filter(gender == "W")
+
+AVP_rank_count_W <- AVP_rank_W %>%
+  count(country) %>%
+  setNames(c("country","num_rank"))
+
+AVP_country_W <- vb_matches_AVP %>%
+  filter(gender == "W") %>%
+  count(country) %>%
+  setNames(c("country","num_team"))
+
+AVP_rank_prop_W = left_join(x = AVP_rank_count_W, y = AVP_country_W, by="country") %>%
+  mutate(rank_prop = (num_rank/num_team)*100) 
+  
+```
+
+```{r}
+AVP_rank_M <- vb_matches_AVP %>%
+  filter(w_rank < l_rank) %>%
+  filter(gender == "M")
+
+AVP_rank_count_M <- AVP_rank_M %>%
+  count(country) %>%
+  setNames(c("country","num_rank"))
+
+AVP_country_M <- vb_matches_AVP %>%
+  filter(gender == "W") %>%
+  count(country) %>%
+  setNames(c("country","num_team"))
+
+AVP_rank_prop_M = left_join(x = AVP_rank_count_M, y = AVP_country_M, by="country") %>%
+  mutate(rank_prop = (num_rank/num_team)*100) 
+```
+
+```{r}
+# Make a table to contain the proportion both for men and women
+rank_prop_com <- tribble(
+  ~gender, ~rank_prop, 
+  "W", 51.14613, 
+  "M", 50.25072,  
+)
+
+```
+
+```{r}
+pra <- ggplot(rank_prop_com, aes(x=reorder(gender,rank_prop), y =  rank_prop)) +
+  geom_bar(stat="identity",fill = 'purple', color = "pink") +
+  ggtitle("Low ranking team beat higher ranking team (AVP)") + 
+  ylab("Rate") +
+  theme(axis.title.x = element_blank(),
+        #axis.text.x = element_blank(),
+        axis.ticks.x = element_blank())
+
+ggplotly(pra)
+```
+
 
 
 # Conclusion
