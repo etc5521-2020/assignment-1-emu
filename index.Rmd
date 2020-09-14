@@ -105,7 +105,7 @@ What are the characteristics of a winning beach volleyball team for both males a
 
 This data set provides beach volleyball statistics for men's and women's matches at two major tournaments, the Fédération Internationale de Volleyball (FIVB) Beach Volleyball World Championships and the Association of Volleyball Professionals (AVP) tour. The matches are played with teams of 2. In this data set, tournament information, player information, player performance statistics and match results are recorded. The data provided ranges from September 2000 to August 2019 and it has been collected by the data recorded at the tournaments. 
 
-The original data source created by Adam Vagner had initial data recorded from September 2000 to July 2017, however it has been periodically updated with the most recent update coming in May 2020. This can be found at https://github.com/BigTimeStats/beach-volleyball.
+The original data source created by Adam Vagner had initial data recorded from September 2000 to July 2017, however it has been periodically updated with the most recent update coming in May 2020. This can be found at this website on Github.[@bigtimestats]
 
 The structure of the data set is:
 
