@@ -21,11 +21,13 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
-
+library(ggplot2)
 library(tidyverse)
 library(plotly)
 library(kableExtra)
 library(gridExtra)
+library(bookdown)
+
 ```
 
 
@@ -693,6 +695,24 @@ Generally speaking, the situation that the lower ranked teams beat the higher ra
 After our analysis, we have concluded that a typical winning male volleyball team most likely has both players originating from the United States, with player one having an average age of 29.40 and an average height of 76.28 inches with player two having an average age of 29.32 and an average height of 76.39 inches.
 
 In addition, a typical winning female volleyball team most likely has both players originating from the United States, with player one having an average age of 27.98 and an average height of 70.91 inches with player two having an average age of 28.29 and an average height of 70.85 inches.
+
+
+# Acknowledgements
+
+Thanks for the contributors of these packages:
+
+
+- ggpplot2 [@ggplot2]
+
+- tidyverse [@tidyverse]
+
+- kableExtra [@kableExtra]
+
+- bookdown [@bookdown]
+
+- gridExtra [@gridExtra]
+
+- plotly [@plotly]
 
 
 # References
