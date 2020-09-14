@@ -2,15 +2,22 @@
 title: "ETC5521 Assignment 1"
 subtitle: "Beach Volleyball Statistics"
 team: [emu]
-author:
+author1:
   - [Justin Thomas]
   - [Mayunk Bharadwaj]
+author2:
+  - [Abhishek Sinha]
+  - [Yiwen Zhang]
 date: "`r Sys.Date()`"
-output:
-  bookdown::html_document2
+bibliography: references.bib
+biblio-style: authoryear-comp
+output: 
+  bookdown::html_document2:
+   citation_package: biblatex
+   toc: TRUE
 ---
 
-[This assignment is for ETC5521 Assignment 1 by Team `r rmarkdown::metadata$team` comprising of `r knitr::combine_words(rmarkdown::metadata$author)`.]{style="color:#006DAE;"}
+[This assignment is for ETC5521 Assignment 2 based on Team `r rmarkdown::metadata$team` comprising of `r knitr::combine_words(rmarkdown::metadata$author1)`.  and revised by  `r knitr::combine_words(rmarkdown::metadata$author2)`.]{style="color:#006DAE;"}
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
