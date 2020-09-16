@@ -726,6 +726,37 @@ players_comb_fivb_win_new %>%
 ```
 Table \@ref(tab:combos-players-win) shows top 10 combinations of the players that are most successful in both the volleyball circuits. **Juliana Felisberta** and **Larissa Franca** is the most successful team across both FIVB and AVP followed by **Emanuel Rego** and **Ricardo Santoso**. 
 
+## Who are the most successful players in beach volleyball and how they have evolved over time and their skills pattern?
+
+```{r players-win, echo=FALSE}
+# 10 most successful players
+
+#players_comb_fivb_win
+
+#players_comb_fivb_win %>% distinct(player1)
+
+players_comb_fivb_win_total_player1 <- players_comb_fivb_win %>% select(player1,n)
+players_comb_fivb_win_total_player1 <- players_comb_fivb_win_total_player1 %>% 
+  group_by(player1) %>% 
+  summarise(n = sum(n)) %>% arrange(desc(n)) %>% rename(player = player1)
+#players_comb_fivb_win_total_player1
+
+players_comb_fivb_win_total_player2 <- players_comb_fivb_win %>% select(player2,n)
+players_comb_fivb_win_total_player2 <- players_comb_fivb_win_total_player2 %>% 
+  group_by(player2) %>% 
+  summarise(n = sum(n)) %>% arrange(desc(n)) %>% rename(player = player2)
+players_comb_fivb_win_total_player2
+
+players_comb_fivb_win_total <- rbind(players_comb_fivb_win_total_player1, players_comb_fivb_win_total_player2)
+
+players_comb_fivb_win_total%>%
+  rename(Matches_Won = n) %>% head(10) %>% kable(caption = "Total Matches won per player") %>% kable_styling(bootstrap_options = c("hover", "striped")) 
+
+#players_comb_fivb_win_total %>% head(10)
+```
+
+Table \@ref(tab:players) shows top 10 most successful players in both the volleyball circuits combined. **Juliana Felisberta** leads with 649 combined wins so far followed by **Emanuel Rego** and **Ricardo Santoso**. 
+
 # Conclusion
 
 After our analysis, we have concluded that a typical winning male volleyball team most likely has both players originating from the United States, with player one having an average age of 29.40 and an average height of 76.28 inches with player two having an average age of 29.32 and an average height of 76.39 inches.
