@@ -709,6 +709,23 @@ players_comb_fivb_total_new %>%
 
 Table \@ref(tab:combos-players) shows top 10 different combinations of players that have teamed up for the greatest number of matches in both the volleyball circuits, which is only a subset of the total combinations of players. In total there were 5,613 unique combinations. **Juliana Felisberta** and **Larissa Franca** partnered up for the most number of times across both FIVB and AVP followed by **Carolina Salgado** and **Maria Clara Salgado**.
 
+```{r combos-players-win, echo=FALSE}
+# combinations with most wins
+
+players_comb_fivb_win <- players_comb_fivb_win %>% mutate(n = 1)
+
+players_comb_fivb_win_new <- players_comb_fivb_win %>% 
+  group_by(player1n = pmin(player1, player2), player2n = pmax(player1, player2)) %>% 
+  summarise(n = sum(n)) %>%
+  rename(player1 = player1n, player2 = player2n) %>% arrange(desc(n))
+
+#sum(players_comb_fivb_win_new$n)
+
+players_comb_fivb_win_new %>%
+  rename(Count = n) %>% head(10) %>% kable(caption = "Different combinations of players that are the most successful") %>% kable_styling(bootstrap_options = c("hover", "striped")) 
+```
+Table \@ref(tab:combos-players-win) shows top 10 combinations of the players that are most successful in both the volleyball circuits. **Juliana Felisberta** and **Larissa Franca** is the most successful team across both FIVB and AVP followed by **Emanuel Rego** and **Ricardo Santoso**. 
+
 # Conclusion
 
 After our analysis, we have concluded that a typical winning male volleyball team most likely has both players originating from the United States, with player one having an average age of 29.40 and an average height of 76.28 inches with player two having an average age of 29.32 and an average height of 76.39 inches.
