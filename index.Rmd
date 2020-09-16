@@ -786,7 +786,7 @@ player_best[is.na(player_best)] <- 0
 player_best
 ```
 
-```{r}
+```{r growth-time, echo=FALSE, fig.align = 'center', fig.cap="Top 5 successful players growth in terms of win overtime"}
 player_best_plot <- player_best %>%
   pivot_longer(c(-year, -player), names_to = "match_type", values_to = "count") 
 
@@ -795,6 +795,8 @@ p <- ggplot(player_best_plot, aes(x=year, y=count, fill=match_type)) +
 
 ggplotly(p)
 ```
+
+Figure \@ref(fig:growth-time) shows the growth of top 5 successful players as identified in table \@ref(tab:players-win). 
 
 # Conclusion
 
