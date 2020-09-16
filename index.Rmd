@@ -755,7 +755,46 @@ players_comb_fivb_win_total%>%
 #players_comb_fivb_win_total %>% head(10)
 ```
 
-Table \@ref(tab:players) shows top 10 most successful players in both the volleyball circuits combined. **Juliana Felisberta** leads with 649 combined wins so far followed by **Emanuel Rego** and **Ricardo Santoso**. 
+Table \@ref(tab:players-win) shows top 10 most successful players in both the volleyball circuits combined. **Juliana Felisberta** leads with 649 combined wins so far followed by **Emanuel Rego** and **Ricardo Santoso**. 
+
+```{r}
+#players_list <- players_comb_fivb_win_total %>% head(5) %>% select(player)
+
+players_comb_fivb_win_year_all <- vb_matches_fivb %>% select(year, w_player1, w_player2, l_player1, l_player2)
+players_comb_fivb_win_year_win <- vb_matches_fivb %>% select(year, w_player1, w_player2)
+
+#players_comb_fivb_win_year_all
+#players_comb_fivb_win_year_win
+
+players_comb_fivb_win_year_all <- players_comb_fivb_win_year_all %>%
+  pivot_longer(!year, names_to = "player type", values_to = "player") %>% select(year, player)
+players_comb_fivb_win_year_win <- players_comb_fivb_win_year_win %>%
+  pivot_longer(!year, names_to = "player type", values_to = "player") %>% select(year, player)
+
+players_comb_fivb_win_year_all <- players_comb_fivb_win_year_all %>% group_by(year, player) %>% tally()
+players_comb_fivb_win_year_win <- players_comb_fivb_win_year_win %>% group_by(year, player) %>% tally()
+
+players_comb_fivb_win_year_all <- players_comb_fivb_win_year_all %>% filter(player %in% c("Juliana Felisberta","Emanuel Rego","Alison Cerutti","April Ross","Carolina Salgado")) %>% arrange(player) %>% rename(total_matches = n)
+
+players_comb_fivb_win_year_win <- players_comb_fivb_win_year_win %>% filter(player %in% c("Juliana Felisberta","Emanuel Rego","Alison Cerutti","April Ross","Carolina Salgado")) %>% arrange(player) %>% rename(win_matches = n)
+
+player_best <- merge(x = players_comb_fivb_win_year_all, y = players_comb_fivb_win_year_win, by = c("year","player"), all.x = TRUE)
+
+player_best <- player_best %>% arrange(player)
+player_best[is.na(player_best)] <- 0 
+
+player_best
+```
+
+```{r}
+player_best_plot <- player_best %>%
+  pivot_longer(c(-year, -player), names_to = "match_type", values_to = "count") 
+
+p <- ggplot(player_best_plot, aes(x=year, y=count, fill=match_type)) +
+    geom_bar(stat='identity', position='dodge') + facet_grid(rows = vars(player)) 
+
+ggplotly(p)
+```
 
 # Conclusion
 
