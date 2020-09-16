@@ -114,7 +114,6 @@ vb_matches %>%
   kable() %>%
   kable_styling(bootstrap_options = c("hover", "striped")) %>%
   scroll_box(width = "100%", height = "400px")
-  
 ```
 
 ## Data Cleaning
@@ -409,7 +408,7 @@ Firstly, since the host country and contestant's country in AVP competition is a
 After getting the results, I make a bar plot to show this with a descending order.
 
 ```{r}
-vb_matches_FIVB_country <- vb_matches_FIVB %>%
+vb_matches_FIVB_country <- vb_matches_fivb %>%
   select(`country`,`w_p1_country`,`w_p2_country`,`l_p1_country`,`l_p2_country`) %>%
   filter(country == w_p1_country) 
 
@@ -419,7 +418,7 @@ FIVB_country_win <- vb_matches_FIVB_country %>%
   setNames(c("country","num_winner"))
 
 # count the number of matches host in every country each year
-FIVB_country <- vb_matches_FIVB %>%
+FIVB_country <- vb_matches_fivb %>%
   count(country) %>%
   setNames(c("country","num_total"))
 
@@ -446,7 +445,7 @@ Looking into Figure \@ref(fig:plot-win), it can be observed that in all the eigh
 ```
 
 ```{r}
-win_country_W <- vb_matches_FIVB %>%
+win_country_W <- vb_matches_fivb %>%
   select(`country`,`gender`,`w_p1_country`,`w_p2_country`,`l_p1_country`,`l_p2_country`) %>%
   filter(country == w_p1_country) %>%
   filter(gender == "W")
@@ -457,7 +456,7 @@ FIVB_win_W <- win_country_W %>%
   setNames(c("country","num_winner"))
 
 # count the number of matches host in every country each year
-FIVB_country_W <- vb_matches_FIVB %>%
+FIVB_country_W <- vb_matches_fivb %>%
   filter(gender == "W") %>%
   count(country) %>%
   setNames(c("country","num_total"))
@@ -488,7 +487,7 @@ ggplotly(pw)
 
 
 ```{r}
-win_country_M <- vb_matches_FIVB %>%
+win_country_M <- vb_matches_fivb %>%
   select(`country`,`gender`,`w_p1_country`,`w_p2_country`,`l_p1_country`,`l_p2_country`) %>%
   filter(country == w_p1_country) %>%
   filter(gender == "M")
@@ -499,7 +498,7 @@ FIVB_win_M <- win_country_M %>%
   setNames(c("country","num_winner"))
 
 # count the number of matches host in every country each year
-FIVB_country_M <- vb_matches_FIVB %>%
+FIVB_country_M <- vb_matches_fivb %>%
   filter(gender == "M") %>%
   count(country) %>%
   setNames(c("country","num_total"))
@@ -539,7 +538,7 @@ First, I focus on FVIB tournament, and filter the matches in which the low ranki
 
 ```{r}
 # FVIB  for women 
-FVIB_rank_W <- vb_matches_FIVB %>%
+FVIB_rank_W <- vb_matches_fivb %>%
   filter(w_rank < l_rank) %>%
   filter(gender == "W")
 
@@ -547,7 +546,7 @@ FVIB_rank_count_W <- FVIB_rank_W %>%
   count(country) %>%
   setNames(c("country","num_rank"))
 
-FIVB_country_W <- vb_matches_FIVB %>%
+FIVB_country_W <- vb_matches_fivb %>%
   filter(gender == "W") %>%
   count(country) %>%
   setNames(c("country","num_total"))
@@ -560,7 +559,7 @@ FVIB_rank_prop_W = left_join(x = FVIB_rank_count_W, y = FIVB_country_W, by="coun
 
 ```{r}
 #FVIB for men
-FVIB_rank_M <- vb_matches_FIVB %>%
+FVIB_rank_M <- vb_matches_fivb %>%
   filter(w_rank < l_rank) %>%
   filter(gender == "M")
 
@@ -568,7 +567,7 @@ FVIB_rank_count_M <- FVIB_rank_M %>%
   count(country) %>%
   setNames(c("country","num_rank"))
 
-FIVB_country_M <- vb_matches_FIVB %>%
+FIVB_country_M <- vb_matches_fivb %>%
   filter(gender == "M") %>%
   count(country) %>%
   setNames(c("country","num_total"))
@@ -618,7 +617,7 @@ ggplotly(pMR)
 Then, it comes to the AVP tournament. I use the same method applied in the analysis of FVIB. But in order to display the women and men rate in one plot, I manually create a tibble that only contains the gender and the rate value. As the host country in AVP is all America, I ignore the country variable. I also draw a plot to represent the results.
 
 ```{r}
-AVP_rank_W <- vb_matches_AVP %>%
+AVP_rank_W <- vb_matches_avp %>%
   filter(w_rank < l_rank) %>%
   filter(gender == "W")
 
@@ -626,7 +625,7 @@ AVP_rank_count_W <- AVP_rank_W %>%
   count(country) %>%
   setNames(c("country","num_rank"))
 
-AVP_country_W <- vb_matches_AVP %>%
+AVP_country_W <- vb_matches_avp %>%
   filter(gender == "W") %>%
   count(country) %>%
   setNames(c("country","num_total"))
@@ -637,7 +636,7 @@ AVP_rank_prop_W = left_join(x = AVP_rank_count_W, y = AVP_country_W, by="country
 ```
 
 ```{r}
-AVP_rank_M <- vb_matches_AVP %>%
+AVP_rank_M <- vb_matches_avp %>%
   filter(w_rank < l_rank) %>%
   filter(gender == "M")
 
@@ -645,7 +644,7 @@ AVP_rank_count_M <- AVP_rank_M %>%
   count(country) %>%
   setNames(c("country","num_rank"))
 
-AVP_country_M <- vb_matches_AVP %>%
+AVP_country_M <- vb_matches_avp %>%
   filter(gender == "W") %>%
   count(country) %>%
   setNames(c("country","num_total"))
@@ -679,6 +678,30 @@ ggplotly(pra)
 ```
 
 Generally speaking, the situation that the lower ranked teams beat the higher ranked teams accounts for more than half of the total in both FVIB and AVP tournaments. Therefore, we can say that it is not uncommon for low ranking teams to beat high ranked ones in beach volleyball. It also indirectly indicates that ranking in beach volleyball competition may not fully reflect the strength and winning rate of a team.
+
+## What combination of the players are most successful and have teamed up for the greatest number of matches in both the volleyball circuits?
+
+```{r}
+# most number of combinations
+
+players_comb_fivb_win <- vb_matches_fivb %>% select(w_player1, w_player2)
+players_comb_fivb_win <- players_comb_fivb_win %>% rename(player1 = w_player1, player2 = w_player2)
+players_comb_fivb_lost <- vb_matches_fivb %>% select(l_player1, l_player2)
+players_comb_fivb_lost <- players_comb_fivb_lost %>% rename(player1 = l_player1, player2 = l_player2)
+players_comb_fivb <- rbind(players_comb_fivb_win, players_comb_fivb_lost)
+
+players_comb_fivb_total <- players_comb_fivb %>% group_by(player1, player2) %>% tally() %>% arrange(desc(n))
+
+#sum(players_comb_fivb_total$n)
+
+players_comb_fivb_total_new <- players_comb_fivb_total %>% 
+  group_by(player1n = pmin(player1, player2), player2n = pmax(player1, player2)) %>% 
+  summarise(n = sum(n)) %>%
+  rename(player1 = player1n, player2 = player2n) %>% arrange(desc(n))
+
+#sum(players_comb_fivb_total_new$n)
+```
+
 
 
 # Conclusion
