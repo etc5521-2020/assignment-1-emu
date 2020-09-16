@@ -681,7 +681,7 @@ Generally speaking, the situation that the lower ranked teams beat the higher ra
 
 ## What combination of the players are most successful and have teamed up for the greatest number of matches in both the volleyball circuits?
 
-```{r}
+```{r combos-players, echo=FALSE}
 # most number of combinations
 
 players_comb_fivb_win <- vb_matches_fivb %>% select(w_player1, w_player2)
@@ -694,15 +694,20 @@ players_comb_fivb_total <- players_comb_fivb %>% group_by(player1, player2) %>% 
 
 #sum(players_comb_fivb_total$n)
 
+# checking and counting as same, a combination of player1 and player2 present as (player1, player2) at one place and at another as (player2, player1). Same combination but different order.
+
 players_comb_fivb_total_new <- players_comb_fivb_total %>% 
   group_by(player1n = pmin(player1, player2), player2n = pmax(player1, player2)) %>% 
   summarise(n = sum(n)) %>%
   rename(player1 = player1n, player2 = player2n) %>% arrange(desc(n))
 
 #sum(players_comb_fivb_total_new$n)
+
+players_comb_fivb_total_new %>%
+  rename(Count = n) %>% head(10) %>% kable(caption = "Different combinations of players that have teamed up for the greatest number of matches in both the volleyball circuits") %>% kable_styling(bootstrap_options = c("hover", "striped")) 
 ```
 
-
+Table \@ref(tab:combos-players) shows top 10 different combinations of players that have teamed up for the greatest number of matches in both the volleyball circuits, which is only a subset of the total combinations of players. In total there were 5,613 unique combinations. **Juliana Felisberta** and **Larissa Franca** partnered up for the most number of times across both FIVB and AVP followed by **Carolina Salgado** and **Maria Clara Salgado**.
 
 # Conclusion
 
