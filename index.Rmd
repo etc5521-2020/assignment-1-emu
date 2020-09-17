@@ -27,7 +27,7 @@ library(plotly)
 library(kableExtra)
 library(gridExtra)
 library(bookdown)
-
+library(lubridate)
 ```
 
 
@@ -116,9 +116,9 @@ vb_matches %>%
 Our data was already in tidy format, so we did not have much cleaning to do. However in order to conduct our analysis, we have tidied the data set by removing variables that are not pertinent to answer our questions. 
 
 ```{r tidy-data, include=FALSE}
-vb_matches <- vb_matches %>% select(-duration:-l_p2_tot_digs) %>% select(c(-tournament, -match_num, -w_rank, -l_rank)) %>% mutate(w1_age)
+vb_matches <- vb_matches %>% select(-duration:-l_p2_tot_digs) %>% select(c(-tournament, -match_num, -w_rank, -l_rank)) %>% mutate(w1_birthyear = year(w_p1_birthdate), w2_birthyear = year(w_p2_birthdate), l1_birthyear = year(l_p1_birthdate), l2_birthyear = year(l_p2_birthdate)) 
 
-vb_matches
+vb_matches <- vb_matches %>% mutate(w_p1_age = year - w1_birthyear, w_p2_age = year - w2_birthyear, l_p1_age = year - l1_birthyear, l_p2_age = year - l2_birthyear) %>% select(c(-w_p1_birthdate, -w_p2_birthdate, -l_p1_birthdate, -l_p2_birthdate, - w1_birthyear, -w2_birthyear, -l1_birthyear, -l2_birthyear))
 
 vb_matches_fivb <- vb_matches %>% filter(circuit == "FIVB")
 vb_matches_avp <- vb_matches %>% filter(circuit == "AVP")
@@ -140,22 +140,18 @@ year	         |Year of tournament
 date	         |Date of match
 gender	       |Gender of team
 w_player1	     |Winner player 1 Name
-w_p1_birthdate |Winner player 1 birth date
 w_p1_age       |Winner player 1 age
 w_p1_hgt	     |Winner player 1 height in inches
 w_p1_country	 |Winner player country
 w_player2	     |Winner player 2 name
-w_p2_birthdate |Winner player 2 birth date
 w_p2_age	     |Winner player 2 age
 w_p2_hgt	     |Winner player 2 height in inches
 w_p2_country	 |Winner player 2 country
 l_player1	     |Losing player 1 name
-l_p1_birthdate |Losing player 1 birth date
 l_p1_age	     |Losing player 1 age
 l_p1_hgt	     |Losing player 1 height in inches
 l_p1_country	 |Losing player 1 country
 l_player2	     |Losing player 2 name
-l_p2_birthdate |Losing player 2 birth date
 l_p2_age	     |Losing player 2 age
 l_p2_hgt	     |Losing player 2 height in inches
 l_p2_country	 |Losing player 2 country
