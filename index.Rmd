@@ -212,7 +212,7 @@ p1 <- ggplot(country %>% head(20), aes(`Number_of_teams`, reorder(`Player_1_coun
   geom_bar(stat = "identity", fill = "steelblue") +
   xlab("Number of teams") +
   ylab("Country") +
-  ggtitle("Top 20 countries with the most winning teams in FIVB & AVP circuits") +
+  ggtitle("Top 20 countries with the most winning teams in FIVB & AVP ") +
   theme(panel.grid.major = element_blank()) +
   theme(plot.background = element_rect(fill = "grey93"))
 
@@ -309,7 +309,8 @@ age_plot <- age %>%
   axis.text.x = element_blank(),
   axis.ticks = element_blank(),
   axis.text=element_text(size=10),
-  axis.title=element_text(size=12,face="bold")) 
+  axis.title=element_text(size=12,face="bold")) +
+  ggtitle("Distribution of Ages of Male Winning Player 1")
 
 ggplotly(age_plot, tooltip = "x")
 ```
@@ -329,7 +330,8 @@ age_plot_2 <- age %>%
   axis.text.x = element_blank(),
   axis.ticks = element_blank(),
   axis.text=element_text(size=10),
-  axis.title=element_text(size=12,face="bold")) 
+  axis.title=element_text(size=12,face="bold"))  +
+  ggtitle("Distribution of Ages of Male Winning Player 2")
 
 ggplotly(age_plot_2, tooltip = "x")
 ```
@@ -350,7 +352,8 @@ age %>%
   xlab("Ages") +
   theme(panel.grid.major = element_blank()) +
  theme(plot.background = element_rect(fill = "grey93",size = 8),
-        plot.margin = unit(c(1, 2 ,1, 2), "cm"))
+        plot.margin = unit(c(1, 2 ,1, 2), "cm")) +
+  ggtitle("Median Ages of Winning Player 2 by gender")
 
 ```
 
@@ -370,7 +373,8 @@ age %>%
   xlab("Ages") +
   theme(panel.grid.major = element_blank()) +
  theme(plot.background = element_rect(fill = "grey93",size = 8),
-        plot.margin = unit(c(1, 2 ,1, 2), "cm"))
+        plot.margin = unit(c(1, 2 ,1, 2), "cm")) +
+  ggtitle("Median Ages of Winning Player 1 by gender")
 
 ```
 
@@ -432,7 +436,8 @@ height_diff %>%
   axis.text.x = element_blank(),
   axis.ticks = element_blank(),
   axis.text=element_text(size=10),
-  axis.title=element_text(size=12,face="bold")) 
+  axis.title=element_text(size=12,face="bold"))  +
+  ggtitle("Difference in Heights of Male Player 1")
 ```
 
 ```{r female-height-diff-boxplot, fig.cap="Difference in Heights of Male Player 2"}
@@ -454,7 +459,8 @@ height_diff %>%
   axis.text.x = element_blank(),
   axis.ticks = element_blank(),
   axis.text=element_text(size=10),
-  axis.title=element_text(size=12,face="bold")) 
+  axis.title=element_text(size=12,face="bold")) +
+  ggtitle("Difference in Heights of Male Player 2")
 ```
 
 
