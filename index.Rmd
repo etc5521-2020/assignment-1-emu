@@ -840,6 +840,7 @@ Thanks for the contributors of these packages:
 
 - plotly [@plotly]
 
+- lubridate [@lubridate]
 
 # References
 
