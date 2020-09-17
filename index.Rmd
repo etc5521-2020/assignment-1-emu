@@ -183,14 +183,14 @@ country <- vb_matches %>% distinct(w_player1, w_p1_country, w_player2, w_p2_coun
 ```
 
 ```{r rename-variables, include=FALSE}
-country <- country %>% rename(`Player 1 country` = w_p1_country,
-                     `Player 2 country` = w_p2_country,
-                     `Number of teams` = n)
+country <- country %>% rename(`Player_1_country` = w_p1_country,
+                     `Player_2_country` = w_p2_country,
+                     `Number_of_teams` = n)
 
 country_fivb <- vb_matches_fivb %>% distinct(w_player1, w_p1_country, w_player2, w_p2_country) %>% group_by(w_p1_country, w_p2_country) %>% 
-                tally() %>% arrange(desc(n)) %>% rename(`Player 1 country` = w_p1_country,
-                     `Player 2 country` = w_p2_country,
-                     `Number of teams` = n)
+                tally() %>% arrange(desc(n)) %>% rename(`Player_1_country` = w_p1_country,
+                     `Player_2_country` = w_p2_country,
+                     `Number_of_teams` = n)
 ```
 
 In order to find our answer to this question, we first did some data wrangling to get the data set up for analysis. Then we followed the steps outlined below:
@@ -203,7 +203,7 @@ In order to find our answer to this question, we first did some data wrangling t
 - Lastly, we saved this as a new data set called "country" to be used later on.
 
 ```{r plot-teams, echo=FALSE, fig.align = 'center', fig.cap="Top 20 countries with the most winning teams"}
-p1 <- ggplot(country %>% head(20), aes(`Number of teams`, reorder(`Player 1 country`, +`Number of teams`))) +
+p1 <- ggplot(country %>% head(20), aes(`Number_of_teams`, reorder(`Player_1_country`, +`Number_of_teams`))) +
   geom_bar(stat = "identity", fill = "steelblue") +
   xlab("Number of teams") +
   ylab("Country") +
@@ -215,7 +215,7 @@ ggplotly(p1, tooltip = "x")
 ```
 
 ```{r plot-teams-fivb, echo=FALSE, fig.align = 'center', fig.cap="Top 20 countries with the most winning teams in FIVB Circuit"}
-p2 <- ggplot(country_fivb %>% head(20), aes(`Number of teams`, reorder(`Player 1 country`, +`Number of teams`))) +
+p2 <- ggplot(country_fivb %>% head(20), aes(`Number_of_teams`, reorder(`Player_1_country`, +`Number_of_teams`))) +
   geom_bar(stat = "identity", fill = "steelblue") +
   xlab("Number of teams") +
   ylab("Country") +
@@ -227,16 +227,16 @@ ggplotly(p2, tooltip = "x")
 ```
 
 
-Figure \@ref(fig:plot-teams) shows the top 20 countries with the most number of winning teams. We can see that the United States was the most dominating country with a total of 4200 winning teams. This means that at minimum 8400 players came from the United States and won. In distant second place, Brazil had 258 winning teams, and so 516 Brazilian players won matches where both players in the team came from Brazil. In a close third place, Germany triumphed with 200 winning teams comprising of 500 players. The remaining 17 teams in this plot ranged from having 166 winning teams to 45 winning teams.
+Figure \@ref(fig:plot-teams) shows the top 20 countries with the most number of winning teams. We can see that the United States was the most dominating country with a total of `r country$Number_of_teams[1]` winning teams. This means that at minimum `r (country$Number_of_teams[1])*2` players came from the United States and won. In distant second place, Brazil had `r country$Number_of_teams[2]` winning teams, and so `r (country$Number_of_teams[2])*2` Brazilian players won matches where both players in the team came from Brazil. In a close third place, Germany triumphed with `r country$Number_of_teams[3]` winning teams comprising of `r (country$Number_of_teams[3])*2` players. The remaining 17 teams in this plot ranged from having `r country$Number_of_teams[4]` winning teams to `r country$Number_of_teams[20]` winning teams.
 
 The clear winner here is United States and we can conclude that majority of the winning players in the AVP and FIVB tournaments hail from the United States.
 
 But if we consider Figure \@ref(fig:plot-teams-fivb) we can notice a different picture. FIVB circuit is the world championships where countries play against each other instead of players centric AVP. Looking at this plot we can see that in world championships teams from countries like Brazil give strong competition to U.S.
 
-We decided to dig further into United States. Although there were 4200 teams where both players in each team came from the United States, there were instances were 1 player came from the United States and another player came from a different country. This following section takes a look at the different countries that partnered with the United States.
+We decided to dig further into United States. Although there were `r country$Number_of_teams[1]` teams where both players in each team came from the United States, there were instances were 1 player came from the United States and another player came from a different country. This following section takes a look at the different countries that partnered with the United States.
 
 ```{r USA, include=FALSE}
-USA <- country %>% filter(`Player 1 country` == "United States" | `Player 2 country` == "United States") 
+USA <- country %>% filter(`Player_1_country` == "United States" | `Player_2_country` == "United States") 
 ```
 
 In order to find the different countries that partnered with the United States, we followed the steps outlined below:
@@ -260,14 +260,6 @@ From looking at the rest of the table, we can see just how popular the United St
 
 ## What is the average age of a winning team and how does it compare with a losing team?
 
-N.B. For the method used to complete this analysis, please refer to the commentary included within the code chunks.
-
-The average age for male winning players 1 and 2 are 29.40 and 29.32 respectively. The average age for male losing players 1 and 2, on the other hand, are 29.08 and 28.95 respectively. There is no obvious bias to winning and losing due to age - as the average age for losers and winners is about the same. 
-
-This might tell us something, however, about the average age of participation in professional male volleyball. If we plot every age of, for instance, male winning player 1 (Figure \@ref(fig:age-2)) and male losing player 2 (Figure \@ref(fig:age-3)) as examples, we see that the most commonly occurring ages are in the late 20s (28-29 year of age). Therefore, it is reasonable to infer that male volleyball players - due to the high levels of participation at those ages -- hit their peak in their late 20s.
-
-Now, let's consider women's volleyball. The average age for female winning players 1 and 2 are 27.98 and 28.29 respectively. The average age for female losing players 1 and 2 are 27.52 and 27.73 respectively. As was the case with the male game, age does not seem to strongly influence winning. However, it is interesting to note that their is a slight difference in average age of winning and losing players between the genders. If we take a look at the average age of winning player 2 in Figure \@ref(fig:age-4), we can see that the average age of winning player 2 is less for females than males. Similarly, if we consider the average age of losing player 1 in Figure \@ref(fig:age-5), we can see that the average age is also less for females than it is for males.
-
 ```{r age}
 #selecting only relevant variables for analysis
 age <- vb_matches %>%
@@ -278,12 +270,24 @@ age_summary_male <- age %>%
   filter(gender=="M") %>%
   summary()
 
+age_summary_male <- as.data.frame(age_summary_male)
+
 #generating five-number summary stats for female player ages
 age_summary_female <- age %>%
   filter(gender=="W") %>%
   summary()
 
+age_summary_female <- as.data.frame(age_summary_female)
 ```
+
+N.B. For the method used to complete this analysis, please refer to the commentary included within the code chunks.
+
+The average age for male winning players 1 and 2 are `r age_summary_male$Freq[11]` and `r age_summary_male$Freq[18]` respectively. The average age for male losing players 1 and 2, on the other hand, are `r age_summary_male$Freq[25]` and `r age_summary_male$Freq[32]` respectively. There is no obvious bias to winning and losing due to age - as the average age for losers and winners is about the same. 
+
+This might tell us something, however, about the average age of participation in professional male volleyball. If we plot every age of, for instance, male winning player 1 (Figure \@ref(fig:age-2)) and male losing player 2 (Figure \@ref(fig:age-3)) as examples, we see that the most commonly occurring ages are in the late 20s (28-29 year of age). Therefore, it is reasonable to infer that male volleyball players - due to the high levels of participation at those ages -- hit their peak in their late 20s.
+
+Now, let's consider women's volleyball. The average age for female winning players 1 and 2 are `r age_summary_female$Freq[11]` and `r age_summary_male$Freq[18]` respectively. The average age for female losing players 1 and 2 are `r age_summary_male$Freq[25]` and `r age_summary_male$Freq[32]` respectively. As was the case with the male game, age does not seem to strongly influence winning. However, it is interesting to note that their is a slight difference in average age of winning and losing players between the genders. If we take a look at the average age of winning player 2 in Figure \@ref(fig:age-4), we can see that the average age of winning player 2 is less for females than males. Similarly, if we consider the average age of losing player 1 in Figure \@ref(fig:age-5), we can see that the average age is also less for females than it is for males.
+
 
 ```{r age-2, fig.cap="Ages of Male Winning Player 1"}
 
@@ -352,12 +356,6 @@ age %>%
 
 ## What is the average height of a winning team and how does it compare with a losing team?
 
-N.B. For the method used to complete this analysis, please refer to the commentary included within the code chunks.
-
-The average height for female winning players 1 and 2 are 70.91 and 70.85 inches respectively. The average height for female losing players 1 and 2 are 70.62 and 70.72 inches respectively. Although the average height for the losing players is less than the height of winning players, it is not a huge difference.
-
-The average height for male winning players 1 and 2 are 76.28 and 76.39 inches respectively, compared to the height for losing players 1 and 2 of 75.98 and 76.15 inches respectively. Consider Figures \@ref(fig:male-height-diff-boxplot) and \@ref(fig:female-height-diff-boxplot), which display the difference in heights between male winning and losing players 1 (Fig. \@ref(fig:male-height-diff-boxplot)) and male winning and losing player 2 (Fig. \@ref(fig:female-height-diff-boxplot)). In both situations, the means in difference in height are pretty evenly centred around 0. so we probably can't say height difference effects winning a volleyball game. We can however say that male volleyball participants are generally taller than female volleyball participants although through common sense we know this phenomenon is not unique to just volleyball.
-
 ```{r height-1}
 
 #selecting relevant variables for analysis
@@ -369,11 +367,22 @@ height_summary_female <- height %>%
   filter(gender=="W") %>%
   summary()
 
+height_summary_female <- as.data.frame(height_summary_female)
+
 #generating male height summary statistics
 height_summary_male <- height %>%
   filter(gender=="M") %>%
   summary()
+
+height_summary_male <- as.data.frame(height_summary_male)
+
 ```
+
+N.B. For the method used to complete this analysis, please refer to the commentary included within the code chunks.
+
+The average height for female winning players 1 and 2 are `r height_summary_female$Freq[11]` and `r height_summary_female$Freq[18]` inches respectively. The average height for female losing players 1 and 2 are `r height_summary_female$Freq[25]` and `r height_summary_female$Freq[32]` inches respectively. Although the average height for the losing players is less than the height of winning players, it is not a huge difference.
+
+The average height for male winning players 1 and 2 are `r height_summary_male$Freq[11]` and `r height_summary_male$Freq[18]` inches respectively, compared to the height for losing players 1 and 2 of `r height_summary_male$Freq[25]` and `r height_summary_male$Freq[32]` inches respectively. Consider Figures \@ref(fig:male-height-diff-boxplot) and \@ref(fig:female-height-diff-boxplot), which display the difference in heights between male winning and losing players 1 (Fig. \@ref(fig:male-height-diff-boxplot)) and male winning and losing player 2 (Fig. \@ref(fig:female-height-diff-boxplot)). In both situations, the means in difference in height are pretty evenly centred around 0. so we probably can't say height difference effects winning a volleyball game. We can however say that male volleyball participants are generally taller than female volleyball participants although through common sense we know this phenomenon is not unique to just volleyball.
 
 ```{r height-diff}
 
@@ -444,7 +453,7 @@ FVIB_win_prop = left_join(x = FIVB_country, y = FIVB_country_win, by="country") 
   mutate(win_rate = (num_winner/num_total)*100) 
 ```
 
-Looking into Figure \@ref(fig:plot-win), it can be observed that in all the eight years, although team of United States has the highest winning rate at `r max(FVIB_win_prop$win_rate)`%, all the winning rate at home is less than fifty percentatge, that is to say, the winning rate at home is not higher than that at away, which shows that the home advantage is not obvious in FVIB competition.
+Looking into Figure \@ref(fig:plot-win), it can be observed that in all the eight years, although team of United States has the highest winning rate at `r max(FVIB_win_prop$win_rate)`%, all the winning rate at home is less than fifty percentage, that is to say, the winning rate at home is not higher than that at away, which shows that the home advantage is not obvious in FVIB competition.
 
 ```{r plot-win, fig.cap="Home winning rate for all team"}
  ggplot(FVIB_win_prop, aes(x=reorder(country,win_rate), y =  win_rate)) +
@@ -687,7 +696,8 @@ pra <- ggplot(rank_prop_com, aes(x=reorder(gender,rank_prop), y =  rank_prop)) +
   geom_bar(stat="identity",fill = 'purple', color = "pink",width=0.3) +
   ggtitle("Low ranking team beat higher ranking team (AVP)") + 
   ylab("Rate") +
-  theme(axis.title.x = element_blank(),
+  xlab("Gender") +
+  theme(#axis.title.x = element_blank(),
         #axis.text.x = element_blank(),
         axis.ticks.x = element_blank())
 
@@ -724,7 +734,7 @@ players_comb_fivb_total_new %>%
   rename(Count = n) %>% head(10) %>% kable(caption = "Different combinations of players that have teamed up for the greatest number of matches in both the volleyball circuits") %>% kable_styling(bootstrap_options = c("hover", "striped")) 
 ```
 
-Table \@ref(tab:combos-players) shows top 10 different combinations of players that have teamed up for the greatest number of matches in both the volleyball circuits, which is only a subset of the total combinations of players. In total there were 5,613 unique combinations. **Juliana Felisberta** and **Larissa Franca** partnered up for the most number of times across both FIVB and AVP followed by **Carolina Salgado** and **Maria Clara Salgado**.
+Table \@ref(tab:combos-players) shows top 10 different combinations of players that have teamed up for the greatest number of matches in both the volleyball circuits, which is only a subset of the total combinations of players. In total there were 5,613 unique combinations. `r players_comb_fivb_total_new$player1[1]` and `r players_comb_fivb_total_new$player2[1]` partnered up for the most number of times across both FIVB and AVP followed by `r players_comb_fivb_total_new$player1[2]` and `r players_comb_fivb_total_new$player2[2]`.
 
 ```{r combos-players-win, echo=FALSE}
 # combinations with most wins
@@ -741,7 +751,7 @@ players_comb_fivb_win_new <- players_comb_fivb_win %>%
 players_comb_fivb_win_new %>%
   rename(Count = n) %>% head(10) %>% kable(caption = "Different combinations of players that are the most successful") %>% kable_styling(bootstrap_options = c("hover", "striped")) 
 ```
-Table \@ref(tab:combos-players-win) shows top 10 combinations of the players that are most successful in both the volleyball circuits. **Juliana Felisberta** and **Larissa Franca** is the most successful team across both FIVB and AVP followed by **Emanuel Rego** and **Ricardo Santoso**. 
+Table \@ref(tab:combos-players-win) shows top 10 combinations of the players that are most successful in both the volleyball circuits. `r players_comb_fivb_win_new$player1[1]` and `r players_comb_fivb_win_new$player2[1]` is the most successful team across both FIVB and AVP followed by `r players_comb_fivb_win_new$player1[2]` and `r players_comb_fivb_win_new$player2[2]`. 
 
 ## Who are the most successful players in beach volleyball and how they have evolved over time and their skills pattern?
 
@@ -772,7 +782,7 @@ players_comb_fivb_win_total%>%
 #players_comb_fivb_win_total %>% head(10)
 ```
 
-Table \@ref(tab:players-win) shows top 10 most successful players in both the volleyball circuits combined. **Juliana Felisberta** leads with 649 combined wins so far followed by **Emanuel Rego** and **Ricardo Santoso**. 
+Table \@ref(tab:players-win) shows top 10 most successful players in both the volleyball circuits combined. `r players_comb_fivb_win_total$player[1]` leads with `r players_comb_fivb_win_total$n[1]` combined wins so far followed by `r players_comb_fivb_win_total$n[2]` and `r players_comb_fivb_win_total$n[3]`. 
 
 ```{r}
 #players_list <- players_comb_fivb_win_total %>% head(5) %>% select(player)
