@@ -459,7 +459,7 @@ FVIB_win_prop = left_join(x = FIVB_country, y = FIVB_country_win, by="country") 
   arrange(desc(win_rate))
 ```
 
-Looking into Figure \@ref(fig:plot-win), it can be observed that in all the eight years, although team of `r FVIB_win_prop$country[1]` has the highest winning rate at `r max(FVIB_win_prop$win_rate)`%, all the winning rate at home is less than fifty percentage, that is to say, the winning rate at home is not higher than that at away, which shows that the home advantage is not obvious in FVIB competition.
+Looking into Figure \@ref(fig:plot-win), it can be observed that in all the eight years, although team of `r FVIB_win_prop$country[1]` has the highest winning rate at `r FVIB_win_prop$win_rate[1]`%, all the winning rate at home is less than fifty percentage, that is to say, the winning rate at home is not higher than that at away, which shows that the home advantage is not obvious in FVIB competition.
 
 ```{r plot-win, fig.cap="Home winning rate for all teams in FIVB"}
  pcor <- ggplot(FVIB_win_prop, aes(x=reorder(country,win_rate), y =  win_rate)) +
@@ -505,7 +505,7 @@ win_prop_W = left_join(x = FIVB_country_W, y = FIVB_win_W, by="country") %>%
 
 Although the home court advantage is not obvious for the winning team in general, is there any difference between the winning teams of different genders?
 
-Then we comes to women's team. On the basis of the previous part of the method, I added gender screening with screening the teams only for female gender, and calculated the home winning rate, then displayed the results in Figure \@ref(fig:plot-W). It can be seen that with `r win_prop_W$country[1]` having the highest rate at `r max(win_prop_W$win_rate)`%, all of the teams don't have rates over fifty percent, quite same as the general situation. That indicates that home advantage is still not obvious in women's team.
+Then we comes to women's team. On the basis of the previous part of the method, I added gender screening with screening the teams only for female gender, and calculated the home winning rate, then displayed the results in Figure \@ref(fig:plot-W). It can be seen that with `r win_prop_W$country[1]` having the highest rate at `r win_prop_W$win_rate[1]`%, all of the teams don't have rates over fifty percent, quite same as the general situation. That indicates that home advantage is still not obvious in women's team.
 
 ```{r plot-W, fig.cap="Home winning rate for Woman"}
 pw <-  ggplot(win_prop_W,
@@ -546,7 +546,7 @@ win_prop_M = left_join(x = FIVB_country_M, y = FIVB_win_M, by="country") %>%
   arrange(desc(win_rate))
 ```
 
-Using the same method of screening women's teams, the teams whose gender is only male are selected and the winning rate at home is calculated after that. The results are shown in Figure \@ref(fig:plot-M). It is quite interesting that the home advantage is also not obvious in men, even if the highest rate is reached `r max(win_prop_M$win_rate)`% by `r win_prop_M$country[1]`.
+Using the same method of screening women's teams, the teams whose gender is only male are selected and the winning rate at home is calculated after that. The results are shown in Figure \@ref(fig:plot-M). It is quite interesting that the home advantage is also not obvious in men, even if the highest rate is reached `r win_prop_M$win_rate[1]`% by `r win_prop_M$country[1]`.
 
 ```{r  plot-M, fig.cap="Home winning rate for Man"}
 pm <-  ggplot(win_prop_M,
@@ -632,7 +632,7 @@ pWR <- FVIB_rank_prop_W %>%
 ggplotly(pWR)
 ```
 
-Figure \@ref(fig:plot-MR) shows the results of men. The tournament in `r FVIB_rank_prop_M$country[1]` had most proportion, about `r max(FVIB_rank_prop_M$rank_prop)`% teams defeating higher ranked one. The only three that was not over fifty percent are `r FVIB_rank_prop_M$country[43]` ,`r FVIB_rank_prop_M$country[44]`and `r FVIB_rank_prop_M$country[45]` with proportion at `r FVIB_rank_prop_M$rank_prop[43]`% , `r FVIB_rank_prop_M$country[44]`and `r FVIB_rank_prop_M$rank_prop[45]`%. Similar to women, most tournament for men had over half team defeating higher ranked one.
+Figure \@ref(fig:plot-MR) shows the results of men. The tournament in `r FVIB_rank_prop_M$country[1]` had most proportion, about `r max(FVIB_rank_prop_M$rank_prop)`% teams defeating higher ranked one. The only three that was not over fifty percent are `r FVIB_rank_prop_M$country[43]` ,`r FVIB_rank_prop_M$country[44]`and `r FVIB_rank_prop_M$country[45]` with proportion at `r FVIB_rank_prop_M$rank_prop[43]`% , `r FVIB_rank_prop_M$rank_prop[44]` and `r FVIB_rank_prop_M$rank_prop[45]`%. Similar to women, most tournament for men had over half team defeating higher ranked one.
 
 However, we could also recognize that this proportion of women is greater than that of men for most countries, which indicates that the overall strength of the women's team is stronger than that of the men's team.
 
@@ -720,7 +720,7 @@ Generally speaking, the situation that the lower ranked teams beat the higher ra
 
 ## What combination of the players are most successful and have teamed up for the greatest number of matches in both the volleyball circuits?
 
-```{r combos-players, echo=FALSE}
+```{r combos-players, echo=FALSE, include=FALSE}
 # most number of combinations
 
 players_comb_fivb_win <- vb_matches_fivb %>% select(w_player1, w_player2)
@@ -767,13 +767,14 @@ Table \@ref(tab:combos-players-win) shows top 10 combinations of the players tha
 
 ## Who are the most successful players in beach volleyball and how they have evolved over time and their skills pattern?
 
-```{r players-win, echo=FALSE}
+
 # 10 most successful players
 
 #players_comb_fivb_win
 
 #players_comb_fivb_win %>% distinct(player1)
 
+```{r  player-comb, include = FALSE}
 players_comb_fivb_win_total_player1 <- players_comb_fivb_win %>% select(player1,n)
 players_comb_fivb_win_total_player1 <- players_comb_fivb_win_total_player1 %>% 
   group_by(player1) %>% 
@@ -787,7 +788,9 @@ players_comb_fivb_win_total_player2 <- players_comb_fivb_win_total_player2 %>%
 players_comb_fivb_win_total_player2
 
 players_comb_fivb_win_total <- rbind(players_comb_fivb_win_total_player1, players_comb_fivb_win_total_player2)
+```
 
+```{r players-win, echo=FALSE}
 players_comb_fivb_win_total%>%
   rename(Matches_Won = n) %>% head(10) %>% kable(caption = "Total Matches won per player") %>% kable_styling(bootstrap_options = c("hover", "striped")) 
 
@@ -796,7 +799,7 @@ players_comb_fivb_win_total%>%
 
 Table \@ref(tab:players-win) shows top 10 most successful players in both the volleyball circuits combined. `r players_comb_fivb_win_total$player[1]` leads with `r players_comb_fivb_win_total$n[1]` combined wins so far followed by `r players_comb_fivb_win_total$n[2]` and `r players_comb_fivb_win_total$n[3]`. 
 
-```{r}
+```{r player-list,include=FALSE}
 #players_list <- players_comb_fivb_win_total %>% head(5) %>% select(player)
 
 players_comb_fivb_win_year_all <- vb_matches_fivb %>% select(year, w_player1, w_player2, l_player1, l_player2)
@@ -830,8 +833,13 @@ player_best_plot <- player_best %>%
   pivot_longer(c(-year, -player), names_to = "match_type", values_to = "count") 
 
 p <- ggplot(player_best_plot, aes(x=year, y=count, fill=match_type)) +
-    geom_bar(stat='identity', position='dodge') + facet_grid(rows = vars(player)) +
-  scale_x_continuous(breaks = seq(2000,2020,20))
+    geom_bar(stat='identity', position='dodge') + facet_grid(rows = vars(player,size=8)) +
+  scale_x_continuous(breaks = seq(2000,2020,20)) +
+  theme(
+        axis.text=element_text(size=10),
+        axis.title=element_text(size=12,face="bold"),
+        plot.margin = unit(c(0.8, 0.3, 0.8, 0.3), "cm"))
+  
 
 ggplotly(p)
 ```
