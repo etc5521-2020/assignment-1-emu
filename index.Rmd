@@ -27,7 +27,7 @@ library(plotly)
 library(kableExtra)
 library(gridExtra)
 library(bookdown)
-
+library(lubridate)
 ```
 
 
@@ -62,21 +62,7 @@ While going through the dataset, we found that the data was incomplete because t
 # Data description
 
 ```{r data-read-in, include=FALSE,cache=TRUE}
-vb_matches_na <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-05-19/vb_matches.csv', guess_max = 76000)
-```
-
-```{r remove-na}
-vb_matches <- vb_matches_na %>% 
-  drop_na()
-
-vb_matches_AVP <- vb_matches_na %>% 
-  filter(circuit == "AVP")%>% 
-  drop_na()
-
-vb_matches_FIVB <- vb_matches_na %>% 
-  filter(circuit == "FIVB")%>% 
-  drop_na()
-
+vb_matches <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-05-19/vb_matches.csv', guess_max = 76000)
 ```
 
 ## Questions
@@ -123,7 +109,6 @@ vb_matches %>%
   kable() %>%
   kable_styling(bootstrap_options = c("hover", "striped")) %>%
   scroll_box(width = "100%", height = "400px")
-  
 ```
 
 ## Data Cleaning
@@ -131,7 +116,12 @@ vb_matches %>%
 Our data was already in tidy format, so we did not have much cleaning to do. However in order to conduct our analysis, we have tidied the data set by removing variables that are not pertinent to answer our questions. 
 
 ```{r tidy-data, include=FALSE}
-vb_matches <- vb_matches %>% select(-duration:-l_p2_tot_digs) %>% select(c(-tournament, -match_num, -w_rank, -l_rank))
+vb_matches <- vb_matches %>% select(-duration:-l_p2_tot_digs) %>% select(c(-tournament, -match_num)) %>% mutate(w1_birthyear = year(w_p1_birthdate), w2_birthyear = year(w_p2_birthdate), l1_birthyear = year(l_p1_birthdate), l2_birthyear = year(l_p2_birthdate)) 
+
+vb_matches <- vb_matches %>% mutate(w_p1_age = year - w1_birthyear, w_p2_age = year - w2_birthyear, l_p1_age = year - l1_birthyear, l_p2_age = year - l2_birthyear) %>% select(c(-w_p1_birthdate, -w_p2_birthdate, -l_p1_birthdate, -l_p2_birthdate, - w1_birthyear, -w2_birthyear, -l1_birthyear, -l2_birthyear))
+
+vb_matches_fivb <- vb_matches %>% filter(circuit == "FIVB")
+vb_matches_avp <- vb_matches %>% filter(circuit == "AVP")
 ```
 
 The methods we have used to tidy our data is as follows:
@@ -150,25 +140,23 @@ year	         |Year of tournament
 date	         |Date of match
 gender	       |Gender of team
 w_player1	     |Winner player 1 Name
-w_p1_birthdate |Winner player 1 birth date
 w_p1_age       |Winner player 1 age
 w_p1_hgt	     |Winner player 1 height in inches
 w_p1_country	 |Winner player country
 w_player2	     |Winner player 2 name
-w_p2_birthdate |Winner player 2 birth date
 w_p2_age	     |Winner player 2 age
 w_p2_hgt	     |Winner player 2 height in inches
 w_p2_country	 |Winner player 2 country
+w_rank         |Winner team rank
 l_player1	     |Losing player 1 name
-l_p1_birthdate |Losing player 1 birth date
 l_p1_age	     |Losing player 1 age
 l_p1_hgt	     |Losing player 1 height in inches
 l_p1_country	 |Losing player 1 country
 l_player2	     |Losing player 2 name
-l_p2_birthdate |Losing player 2 birth date
 l_p2_age	     |Losing player 2 age
 l_p2_hgt	     |Losing player 2 height in inches
 l_p2_country	 |Losing player 2 country
+w_rank         |Losing team rank
 score	         |Match score separated by a dash and matches separated by a comma, eg 21 points to 12 points is 21-12
 
 ## Data sources
@@ -191,10 +179,16 @@ For both the AVP and FIVB tournaments, a team consists of 2 players. Each player
 ```{r arrange-desc, include=FALSE}
 country <- vb_matches %>% distinct(w_player1, w_p1_country, w_player2, w_p2_country) %>%                 group_by(w_p1_country, w_p2_country) %>% 
                 tally() %>% drop_na() %>% arrange(desc(n))
+
 ```
 
 ```{r rename-variables, include=FALSE}
 country <- country %>% rename(`Player 1 country` = w_p1_country,
+                     `Player 2 country` = w_p2_country,
+                     `Number of teams` = n)
+
+country_fivb <- vb_matches_fivb %>% distinct(w_player1, w_p1_country, w_player2, w_p2_country) %>% group_by(w_p1_country, w_p2_country) %>% 
+                tally() %>% arrange(desc(n)) %>% rename(`Player 1 country` = w_p1_country,
                      `Player 2 country` = w_p2_country,
                      `Number of teams` = n)
 ```
@@ -213,11 +207,23 @@ p1 <- ggplot(country %>% head(20), aes(`Number of teams`, reorder(`Player 1 coun
   geom_bar(stat = "identity", fill = "steelblue") +
   xlab("Number of teams") +
   ylab("Country") +
-  ggtitle("Top 20 countries with the most winning teams") +
+  ggtitle("Top 20 countries with the most winning teams in FIVB & AVP circuits combined") +
   theme(panel.grid.major = element_blank()) +
   theme(plot.background = element_rect(fill = "grey93"))
 
 ggplotly(p1, tooltip = "x")
+```
+
+```{r plot-teams-fivb, echo=FALSE, fig.align = 'center', fig.cap="Top 20 countries with the most winning teams in FIVB Circuit"}
+p2 <- ggplot(country_fivb %>% head(20), aes(`Number of teams`, reorder(`Player 1 country`, +`Number of teams`))) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  xlab("Number of teams") +
+  ylab("Country") +
+  ggtitle("Top 20 countries with the most winning teams in FIVB circuit") +
+  theme(panel.grid.major = element_blank()) +
+  theme(plot.background = element_rect(fill = "grey93"))
+
+ggplotly(p2, tooltip = "x")
 ```
 
 
@@ -225,6 +231,7 @@ Figure \@ref(fig:plot-teams) shows the top 20 countries with the most number of 
 
 The clear winner here is United States and we can conclude that majority of the winning players in the AVP and FIVB tournaments hail from the United States.
 
+But if we consider Figure \@ref(fig:plot-teams-fivb) we can notice a different picture. FIVB circuit is the world championships where countries play against each other instead of players centric AVP. Looking at this plot we can see that in world championships teams from countries like Brazil give strong competition to U.S.
 
 We decided to dig further into United States. Although there were 4200 teams where both players in each team came from the United States, there were instances were 1 player came from the United States and another player came from a different country. This following section takes a look at the different countries that partnered with the United States.
 
@@ -418,7 +425,7 @@ Firstly, since the host country and contestant's country in AVP competition is a
 After getting the results, I make a bar plot to show this with a descending order.
 
 ```{r}
-vb_matches_FIVB_country <- vb_matches_FIVB %>%
+vb_matches_FIVB_country <- vb_matches_fivb %>%
   select(`country`,`w_p1_country`,`w_p2_country`,`l_p1_country`,`l_p2_country`) %>%
   filter(country == w_p1_country) 
 
@@ -428,7 +435,7 @@ FIVB_country_win <- vb_matches_FIVB_country %>%
   setNames(c("country","num_winner"))
 
 # count the number of matches host in every country each year
-FIVB_country <- vb_matches_FIVB %>%
+FIVB_country <- vb_matches_fivb %>%
   count(country) %>%
   setNames(c("country","num_total"))
 
@@ -455,7 +462,7 @@ Looking into Figure \@ref(fig:plot-win), it can be observed that in all the eigh
 ```
 
 ```{r}
-win_country_W <- vb_matches_FIVB %>%
+win_country_W <- vb_matches_fivb %>%
   select(`country`,`gender`,`w_p1_country`,`w_p2_country`,`l_p1_country`,`l_p2_country`) %>%
   filter(country == w_p1_country) %>%
   filter(gender == "W")
@@ -466,7 +473,7 @@ FIVB_win_W <- win_country_W %>%
   setNames(c("country","num_winner"))
 
 # count the number of matches host in every country each year
-FIVB_country_W <- vb_matches_FIVB %>%
+FIVB_country_W <- vb_matches_fivb %>%
   filter(gender == "W") %>%
   count(country) %>%
   setNames(c("country","num_total"))
@@ -497,7 +504,7 @@ ggplotly(pw)
 
 
 ```{r}
-win_country_M <- vb_matches_FIVB %>%
+win_country_M <- vb_matches_fivb %>%
   select(`country`,`gender`,`w_p1_country`,`w_p2_country`,`l_p1_country`,`l_p2_country`) %>%
   filter(country == w_p1_country) %>%
   filter(gender == "M")
@@ -508,7 +515,7 @@ FIVB_win_M <- win_country_M %>%
   setNames(c("country","num_winner"))
 
 # count the number of matches host in every country each year
-FIVB_country_M <- vb_matches_FIVB %>%
+FIVB_country_M <- vb_matches_fivb %>%
   filter(gender == "M") %>%
   count(country) %>%
   setNames(c("country","num_total"))
@@ -548,7 +555,7 @@ First, I focus on FVIB tournament, and filter the matches in which the low ranki
 
 ```{r}
 # FVIB  for women 
-FVIB_rank_W <- vb_matches_FIVB %>%
+FVIB_rank_W <- vb_matches_fivb %>%
   filter(w_rank < l_rank) %>%
   filter(gender == "W")
 
@@ -556,7 +563,7 @@ FVIB_rank_count_W <- FVIB_rank_W %>%
   count(country) %>%
   setNames(c("country","num_rank"))
 
-FIVB_country_W <- vb_matches_FIVB %>%
+FIVB_country_W <- vb_matches_fivb %>%
   filter(gender == "W") %>%
   count(country) %>%
   setNames(c("country","num_total"))
@@ -569,7 +576,7 @@ FVIB_rank_prop_W = left_join(x = FVIB_rank_count_W, y = FIVB_country_W, by="coun
 
 ```{r}
 #FVIB for men
-FVIB_rank_M <- vb_matches_FIVB %>%
+FVIB_rank_M <- vb_matches_fivb %>%
   filter(w_rank < l_rank) %>%
   filter(gender == "M")
 
@@ -577,7 +584,7 @@ FVIB_rank_count_M <- FVIB_rank_M %>%
   count(country) %>%
   setNames(c("country","num_rank"))
 
-FIVB_country_M <- vb_matches_FIVB %>%
+FIVB_country_M <- vb_matches_fivb %>%
   filter(gender == "M") %>%
   count(country) %>%
   setNames(c("country","num_total"))
@@ -627,7 +634,7 @@ ggplotly(pMR)
 Then, it comes to the AVP tournament. I use the same method applied in the analysis of FVIB. But in order to display the women and men rate in one plot, I manually create a tibble that only contains the gender and the rate value. As the host country in AVP is all America, I ignore the country variable. I also draw a plot to represent the results.
 
 ```{r}
-AVP_rank_W <- vb_matches_AVP %>%
+AVP_rank_W <- vb_matches_avp %>%
   filter(w_rank < l_rank) %>%
   filter(gender == "W")
 
@@ -635,7 +642,7 @@ AVP_rank_count_W <- AVP_rank_W %>%
   count(country) %>%
   setNames(c("country","num_rank"))
 
-AVP_country_W <- vb_matches_AVP %>%
+AVP_country_W <- vb_matches_avp %>%
   filter(gender == "W") %>%
   count(country) %>%
   setNames(c("country","num_total"))
@@ -646,7 +653,7 @@ AVP_rank_prop_W = left_join(x = AVP_rank_count_W, y = AVP_country_W, by="country
 ```
 
 ```{r}
-AVP_rank_M <- vb_matches_AVP %>%
+AVP_rank_M <- vb_matches_avp %>%
   filter(w_rank < l_rank) %>%
   filter(gender == "M")
 
@@ -654,7 +661,7 @@ AVP_rank_count_M <- AVP_rank_M %>%
   count(country) %>%
   setNames(c("country","num_rank"))
 
-AVP_country_M <- vb_matches_AVP %>%
+AVP_country_M <- vb_matches_avp %>%
   filter(gender == "W") %>%
   count(country) %>%
   setNames(c("country","num_total"))
@@ -689,6 +696,125 @@ ggplotly(pra)
 
 Generally speaking, the situation that the lower ranked teams beat the higher ranked teams accounts for more than half of the total in both FVIB and AVP tournaments. Therefore, we can say that it is not uncommon for low ranking teams to beat high ranked ones in beach volleyball. It also indirectly indicates that ranking in beach volleyball competition may not fully reflect the strength and winning rate of a team.
 
+## What combination of the players are most successful and have teamed up for the greatest number of matches in both the volleyball circuits?
+
+```{r combos-players, echo=FALSE}
+# most number of combinations
+
+players_comb_fivb_win <- vb_matches_fivb %>% select(w_player1, w_player2)
+players_comb_fivb_win <- players_comb_fivb_win %>% rename(player1 = w_player1, player2 = w_player2)
+players_comb_fivb_lost <- vb_matches_fivb %>% select(l_player1, l_player2)
+players_comb_fivb_lost <- players_comb_fivb_lost %>% rename(player1 = l_player1, player2 = l_player2)
+players_comb_fivb <- rbind(players_comb_fivb_win, players_comb_fivb_lost)
+
+players_comb_fivb_total <- players_comb_fivb %>% group_by(player1, player2) %>% tally() %>% arrange(desc(n))
+
+#sum(players_comb_fivb_total$n)
+
+# checking and counting as same, a combination of player1 and player2 present as (player1, player2) at one place and at another as (player2, player1). Same combination but different order.
+
+players_comb_fivb_total_new <- players_comb_fivb_total %>% 
+  group_by(player1n = pmin(player1, player2), player2n = pmax(player1, player2)) %>% 
+  summarise(n = sum(n)) %>%
+  rename(player1 = player1n, player2 = player2n) %>% arrange(desc(n))
+
+#sum(players_comb_fivb_total_new$n)
+
+players_comb_fivb_total_new %>%
+  rename(Count = n) %>% head(10) %>% kable(caption = "Different combinations of players that have teamed up for the greatest number of matches in both the volleyball circuits") %>% kable_styling(bootstrap_options = c("hover", "striped")) 
+```
+
+Table \@ref(tab:combos-players) shows top 10 different combinations of players that have teamed up for the greatest number of matches in both the volleyball circuits, which is only a subset of the total combinations of players. In total there were 5,613 unique combinations. **Juliana Felisberta** and **Larissa Franca** partnered up for the most number of times across both FIVB and AVP followed by **Carolina Salgado** and **Maria Clara Salgado**.
+
+```{r combos-players-win, echo=FALSE}
+# combinations with most wins
+
+players_comb_fivb_win <- players_comb_fivb_win %>% mutate(n = 1)
+
+players_comb_fivb_win_new <- players_comb_fivb_win %>% 
+  group_by(player1n = pmin(player1, player2), player2n = pmax(player1, player2)) %>% 
+  summarise(n = sum(n)) %>%
+  rename(player1 = player1n, player2 = player2n) %>% arrange(desc(n))
+
+#sum(players_comb_fivb_win_new$n)
+
+players_comb_fivb_win_new %>%
+  rename(Count = n) %>% head(10) %>% kable(caption = "Different combinations of players that are the most successful") %>% kable_styling(bootstrap_options = c("hover", "striped")) 
+```
+Table \@ref(tab:combos-players-win) shows top 10 combinations of the players that are most successful in both the volleyball circuits. **Juliana Felisberta** and **Larissa Franca** is the most successful team across both FIVB and AVP followed by **Emanuel Rego** and **Ricardo Santoso**. 
+
+## Who are the most successful players in beach volleyball and how they have evolved over time and their skills pattern?
+
+```{r players-win, echo=FALSE}
+# 10 most successful players
+
+#players_comb_fivb_win
+
+#players_comb_fivb_win %>% distinct(player1)
+
+players_comb_fivb_win_total_player1 <- players_comb_fivb_win %>% select(player1,n)
+players_comb_fivb_win_total_player1 <- players_comb_fivb_win_total_player1 %>% 
+  group_by(player1) %>% 
+  summarise(n = sum(n)) %>% arrange(desc(n)) %>% rename(player = player1)
+#players_comb_fivb_win_total_player1
+
+players_comb_fivb_win_total_player2 <- players_comb_fivb_win %>% select(player2,n)
+players_comb_fivb_win_total_player2 <- players_comb_fivb_win_total_player2 %>% 
+  group_by(player2) %>% 
+  summarise(n = sum(n)) %>% arrange(desc(n)) %>% rename(player = player2)
+players_comb_fivb_win_total_player2
+
+players_comb_fivb_win_total <- rbind(players_comb_fivb_win_total_player1, players_comb_fivb_win_total_player2)
+
+players_comb_fivb_win_total%>%
+  rename(Matches_Won = n) %>% head(10) %>% kable(caption = "Total Matches won per player") %>% kable_styling(bootstrap_options = c("hover", "striped")) 
+
+#players_comb_fivb_win_total %>% head(10)
+```
+
+Table \@ref(tab:players-win) shows top 10 most successful players in both the volleyball circuits combined. **Juliana Felisberta** leads with 649 combined wins so far followed by **Emanuel Rego** and **Ricardo Santoso**. 
+
+```{r}
+#players_list <- players_comb_fivb_win_total %>% head(5) %>% select(player)
+
+players_comb_fivb_win_year_all <- vb_matches_fivb %>% select(year, w_player1, w_player2, l_player1, l_player2)
+players_comb_fivb_win_year_win <- vb_matches_fivb %>% select(year, w_player1, w_player2)
+
+#players_comb_fivb_win_year_all
+#players_comb_fivb_win_year_win
+
+players_comb_fivb_win_year_all <- players_comb_fivb_win_year_all %>%
+  pivot_longer(!year, names_to = "player type", values_to = "player") %>% select(year, player)
+players_comb_fivb_win_year_win <- players_comb_fivb_win_year_win %>%
+  pivot_longer(!year, names_to = "player type", values_to = "player") %>% select(year, player)
+
+players_comb_fivb_win_year_all <- players_comb_fivb_win_year_all %>% group_by(year, player) %>% tally()
+players_comb_fivb_win_year_win <- players_comb_fivb_win_year_win %>% group_by(year, player) %>% tally()
+
+players_comb_fivb_win_year_all <- players_comb_fivb_win_year_all %>% filter(player %in% c("Juliana Felisberta","Emanuel Rego","Alison Cerutti","April Ross","Carolina Salgado")) %>% arrange(player) %>% rename(total_matches = n)
+
+players_comb_fivb_win_year_win <- players_comb_fivb_win_year_win %>% filter(player %in% c("Juliana Felisberta","Emanuel Rego","Alison Cerutti","April Ross","Carolina Salgado")) %>% arrange(player) %>% rename(win_matches = n)
+
+player_best <- merge(x = players_comb_fivb_win_year_all, y = players_comb_fivb_win_year_win, by = c("year","player"), all.x = TRUE)
+
+player_best <- player_best %>% arrange(player)
+player_best[is.na(player_best)] <- 0 
+
+player_best
+```
+
+```{r growth-time, echo=FALSE, fig.align = 'center', fig.cap="Top 5 successful players growth in terms of win overtime"}
+player_best_plot <- player_best %>%
+  pivot_longer(c(-year, -player), names_to = "match_type", values_to = "count") 
+
+p <- ggplot(player_best_plot, aes(x=year, y=count, fill=match_type)) +
+    geom_bar(stat='identity', position='dodge') + facet_grid(rows = vars(player)) +
+  scale_x_continuous(breaks = seq(2000,2020,20))
+
+ggplotly(p)
+```
+
+Figure \@ref(fig:growth-time) shows the growth of top 5 successful players as identified in table \@ref(tab:players-win). 
 
 # Conclusion
 
@@ -714,6 +840,7 @@ Thanks for the contributors of these packages:
 
 - plotly [@plotly]
 
+- lubridate [@lubridate]
 
 # References
 

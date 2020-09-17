@@ -1,6 +1,17 @@
 base
+<<<<<<< HEAD
 tidyverse
 ggplot2
+=======
+methods
+datasets
+utils
+grDevices
+graphics
+stats
+ggplot2
+tidyverse
+>>>>>>> 3d364fafe82d07e6f01c5cb15265e33a16ec6e85
 tibble
 tidyr
 readr
