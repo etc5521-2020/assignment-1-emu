@@ -65,11 +65,6 @@ While going through the dataset, we found that the data was incomplete because t
 vb_matches <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-05-19/vb_matches.csv', guess_max = 76000)
 ```
 
-```{r dividing-data-circuits}
-vb_matches_fivb <- vb_matches %>% filter(circuit == "FIVB")
-vb_matches_avp <- vb_matches %>% filter(circuit == "AVP")
-```
-
 ## Questions
 
 **Primary Question**
@@ -121,7 +116,12 @@ vb_matches %>%
 Our data was already in tidy format, so we did not have much cleaning to do. However in order to conduct our analysis, we have tidied the data set by removing variables that are not pertinent to answer our questions. 
 
 ```{r tidy-data, include=FALSE}
-vb_matches <- vb_matches %>% select(-duration:-l_p2_tot_digs) %>% select(c(-tournament, -match_num, -w_rank, -l_rank))
+vb_matches <- vb_matches %>% select(-duration:-l_p2_tot_digs) %>% select(c(-tournament, -match_num, -w_rank, -l_rank)) %>% mutate(w1_age)
+
+vb_matches
+
+vb_matches_fivb <- vb_matches %>% filter(circuit == "FIVB")
+vb_matches_avp <- vb_matches %>% filter(circuit == "AVP")
 ```
 
 The methods we have used to tidy our data is as follows:
@@ -181,10 +181,16 @@ For both the AVP and FIVB tournaments, a team consists of 2 players. Each player
 ```{r arrange-desc, include=FALSE}
 country <- vb_matches %>% distinct(w_player1, w_p1_country, w_player2, w_p2_country) %>%                 group_by(w_p1_country, w_p2_country) %>% 
                 tally() %>% drop_na() %>% arrange(desc(n))
+
 ```
 
 ```{r rename-variables, include=FALSE}
 country <- country %>% rename(`Player 1 country` = w_p1_country,
+                     `Player 2 country` = w_p2_country,
+                     `Number of teams` = n)
+
+country_fivb <- vb_matches_fivb %>% distinct(w_player1, w_p1_country, w_player2, w_p2_country) %>% group_by(w_p1_country, w_p2_country) %>% 
+                tally() %>% arrange(desc(n)) %>% rename(`Player 1 country` = w_p1_country,
                      `Player 2 country` = w_p2_country,
                      `Number of teams` = n)
 ```
@@ -203,11 +209,21 @@ p1 <- ggplot(country %>% head(20), aes(`Number of teams`, reorder(`Player 1 coun
   geom_bar(stat = "identity", fill = "steelblue") +
   xlab("Number of teams") +
   ylab("Country") +
-  ggtitle("Top 20 countries with the most winning teams") +
+  ggtitle("Top 20 countries with the most winning teams in FIVB & AVP circuits combined") +
   theme(panel.grid.major = element_blank()) +
   theme(plot.background = element_rect(fill = "grey93"))
 
 ggplotly(p1, tooltip = "x")
+
+p2 <- ggplot(country_fivb %>% head(20), aes(`Number of teams`, reorder(`Player 1 country`, +`Number of teams`))) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  xlab("Number of teams") +
+  ylab("Country") +
+  ggtitle("Top 20 countries with the most winning teams in FIVB circuit") +
+  theme(panel.grid.major = element_blank()) +
+  theme(plot.background = element_rect(fill = "grey93"))
+
+ggplotly(p2, tooltip = "x")
 ```
 
 
@@ -410,7 +426,7 @@ After getting the results, I make a bar plot to show this with a descending orde
 ```{r}
 vb_matches_FIVB_country <- vb_matches_fivb %>%
   select(`country`,`w_p1_country`,`w_p2_country`,`l_p1_country`,`l_p2_country`) %>%
-  filter(country == w_p1_country) 
+  filter(country == w_p1_country | country == w_p2_country) 
 
 # count the number of matches with winners from the host country
 FIVB_country_win <- vb_matches_FIVB_country %>%
@@ -791,7 +807,8 @@ player_best_plot <- player_best %>%
   pivot_longer(c(-year, -player), names_to = "match_type", values_to = "count") 
 
 p <- ggplot(player_best_plot, aes(x=year, y=count, fill=match_type)) +
-    geom_bar(stat='identity', position='dodge') + facet_grid(rows = vars(player)) 
+    geom_bar(stat='identity', position='dodge') + facet_grid(rows = vars(player)) +
+  scale_x_continuous(breaks = seq(2000,2020,20))
 
 ggplotly(p)
 ```
