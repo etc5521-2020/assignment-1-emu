@@ -212,7 +212,7 @@ p1 <- ggplot(country %>% head(20), aes(`Number_of_teams`, reorder(`Player_1_coun
   geom_bar(stat = "identity", fill = "steelblue") +
   xlab("Number of teams") +
   ylab("Country") +
-  ggtitle("Top 20 countries with the most winning teams in FIVB & AVP circuits combined") +
+  ggtitle("Top 20 countries with the most winning teams in FIVB & AVP circuits") +
   theme(panel.grid.major = element_blank()) +
   theme(plot.background = element_rect(fill = "grey93"))
 
@@ -304,7 +304,12 @@ age_plot <- age %>%
   xlab("Ages") +
   ylab("")  +
   theme(panel.grid.major = element_blank()) +
-  theme(plot.background = element_rect(fill = "grey93"))
+  theme(plot.background = element_rect(fill = "grey93"))+
+  theme(
+  axis.text.x = element_blank(),
+  axis.ticks = element_blank(),
+  axis.text=element_text(size=10),
+  axis.title=element_text(size=12,face="bold")) 
 
 ggplotly(age_plot, tooltip = "x")
 ```
@@ -319,7 +324,12 @@ age_plot_2 <- age %>%
   xlab("Ages") +
   ylab("") +
   theme(panel.grid.major = element_blank()) +
-  theme(plot.background = element_rect(fill = "grey93"))
+  theme(plot.background = element_rect(fill = "grey93")) +
+  theme(
+  axis.text.x = element_blank(),
+  axis.ticks = element_blank(),
+  axis.text=element_text(size=10),
+  axis.title=element_text(size=12,face="bold")) 
 
 ggplotly(age_plot_2, tooltip = "x")
 ```
@@ -334,10 +344,13 @@ age %>%
   coord_flip() +
   theme(
   axis.text.x = element_blank(),
-  axis.ticks = element_blank()) +
+  axis.ticks = element_blank(),
+  axis.text=element_text(size=10),
+  axis.title=element_text(size=12,face="bold"))  +
   xlab("Ages") +
   theme(panel.grid.major = element_blank()) +
-  theme(plot.background = element_rect(fill = "grey93"))
+ theme(plot.background = element_rect(fill = "grey93",size = 8),
+        plot.margin = unit(c(1, 2 ,1, 2), "cm"))
 
 ```
 
@@ -351,10 +364,13 @@ age %>%
   coord_flip() +
   theme(
   axis.text.x = element_blank(),
-  axis.ticks = element_blank()) +
+  axis.ticks = element_blank(),
+  axis.text=element_text(size=10),
+  axis.title=element_text(size=12,face="bold")) +
   xlab("Ages") +
   theme(panel.grid.major = element_blank()) +
-  theme(plot.background = element_rect(fill = "grey93"))
+ theme(plot.background = element_rect(fill = "grey93",size = 8),
+        plot.margin = unit(c(1, 2 ,1, 2), "cm"))
 
 ```
 
@@ -410,7 +426,13 @@ height_diff %>%
   axis.ticks = element_blank()) +
   xlab("Difference in Height (inches)")  +
   theme(panel.grid.major = element_blank()) +
-  theme(plot.background = element_rect(fill = "grey93"))
+  theme(plot.background = element_rect(fill = "grey93",size = 8),
+        plot.margin = unit(c(1, 2 ,1, 2), "cm"))+
+  theme(
+  axis.text.x = element_blank(),
+  axis.ticks = element_blank(),
+  axis.text=element_text(size=10),
+  axis.title=element_text(size=12,face="bold")) 
 ```
 
 ```{r female-height-diff-boxplot, fig.cap="Difference in Heights of Male Player 2"}
@@ -426,7 +448,13 @@ height_diff %>%
   axis.ticks = element_blank()) +
   xlab("Difference in Height (inches)")  +
   theme(panel.grid.major = element_blank()) +
-  theme(plot.background = element_rect(fill = "grey93"))
+  theme(plot.background = element_rect(fill = "grey93",size = 8),
+        plot.margin = unit(c(1, 2 ,1, 2), "cm")) +
+  theme(
+  axis.text.x = element_blank(),
+  axis.ticks = element_blank(),
+  axis.text=element_text(size=10),
+  axis.title=element_text(size=12,face="bold")) 
 ```
 
 
@@ -838,7 +866,7 @@ p <- ggplot(player_best_plot, aes(x=year, y=count, fill=match_type)) +
   theme(
         axis.text=element_text(size=10),
         axis.title=element_text(size=12,face="bold"),
-        plot.margin = unit(c(0.8, 0.3, 0.8, 0.3), "cm"))
+        plot.margin = unit(c(0.5, 0.2, 0.5, 0.2), "cm"))
   
 
 ggplotly(p)
