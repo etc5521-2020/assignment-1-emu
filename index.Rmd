@@ -455,19 +455,23 @@ FVIB_win_prop = left_join(x = FIVB_country, y = FIVB_country_win, by="country") 
 
 Looking into Figure \@ref(fig:plot-win), it can be observed that in all the eight years, although team of United States has the highest winning rate at `r max(FVIB_win_prop$win_rate)`%, all the winning rate at home is less than fifty percentage, that is to say, the winning rate at home is not higher than that at away, which shows that the home advantage is not obvious in FVIB competition.
 
-```{r plot-win, fig.cap="Home winning rate for all team"}
- ggplot(FVIB_win_prop, aes(x=reorder(country,win_rate), y =  win_rate)) +
+```{r plot-win, fig.cap="Home winning rate for all teams in FIVB"}
+ pcor <- ggplot(FVIB_win_prop, aes(x=reorder(country,win_rate), y =  win_rate)) +
   geom_bar(position = 'dodge',stat="identity",fill = '#619CFF') +
-   geom_text(aes(label= round(win_rate)) , position=position_dodge(width=1),hjust = 0.000001)+
-  ggtitle("Home winning rate for all team") +
-  theme(plot.background = element_rect(fill = "#f0f0f0")) +
+   #geom_text(aes(label= round(win_rate)) , position=position_dodge(width=1),hjust = 0.000001)+
+  ggtitle("Home winning rate for all teams in FIVB") +
+  theme(plot.background = element_rect(fill = "#ffffff")) +
   scale_y_continuous(breaks=NULL) +
   xlab("country")+
   ylab("proportion")+
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
-  theme(panel.background = element_blank()) +
+  theme(panel.background = element_blank(),
+        axis.text=element_text(size=7),
+        axis.title=element_text(size=12,face="bold")) +
+  
   coord_flip() 
 
+ggplotly(pcor)
 ```
 
 ```{r}
@@ -578,7 +582,8 @@ FIVB_country_W <- vb_matches_fivb %>%
   setNames(c("country","num_total"))
 
 FVIB_rank_prop_W = left_join(x = FVIB_rank_count_W, y = FIVB_country_W, by="country") %>%
-  mutate(rank_prop = (num_rank/num_total)*100) 
+  mutate(rank_prop = (num_rank/num_total)*100) %>%
+  arrange(desc(rank_prop))
   
 ```
 
@@ -599,10 +604,11 @@ FIVB_country_M <- vb_matches_fivb %>%
   setNames(c("country","num_total"))
 
 FVIB_rank_prop_M = left_join(x = FVIB_rank_count_M, y = FIVB_country_M, by="country") %>%
-  mutate(rank_prop = (num_rank/num_total)*100) 
+  mutate(rank_prop = (num_rank/num_total)*100)  %>%
+  arrange(desc(rank_prop))
 ```
 
-In Figure \@ref(fig:plot-WR), it can be seen that tournament in Italy has the most proportion of team defeating teams higher than them at about `r max(FVIB_rank_prop_W$rank_prop)`%, and the lowest tournament is in England at `r min(FVIB_rank_prop_W$rank_prop)`%. Most of the tournaments have over half teams defeating the higher ranked teams.
+In Figure \@ref(fig:plot-WR), for female,it can be seen that tournament in `r FVIB_rank_prop_W$country[1]` has the most proportion of team defeating teams higher ranking them at about `r max(FVIB_rank_prop_W$rank_prop)`%, and the lowest tournament is in `r FVIB_rank_prop_W$country[44]` at `r min(FVIB_rank_prop_W$rank_prop)`%. Most of the tournaments have over half teams defeating the higher ranked teams.
 
 ```{r plot-WR, fig.cap="Low ranking team beat higher ranking team(Woman FVIB)"}
 #plot for women in FVIB
@@ -620,9 +626,9 @@ pWR <- FVIB_rank_prop_W %>%
 ggplotly(pWR)
 ```
 
-Figure \@ref(fig:plot-MR) shows the results of men. The tournament in Greece had about `r max(FVIB_rank_prop_M$rank_prop)`% teams defeating higher ranked one. The only two that was not over fifty percent are Brazil and China with proportion at `r FVIB_rank_prop_M$rank_prop[1]`% and `r FVIB_rank_prop_M$rank_prop[2]`%. Similar to women, most tournament for men had over half team defeating higher ranked one.
+Figure \@ref(fig:plot-MR) shows the results of men. The tournament in `r FVIB_rank_prop_M$country[1]` had most proportion, about `r max(FVIB_rank_prop_M$rank_prop)`% teams defeating higher ranked one. The only three that was not over fifty percent are `r FVIB_rank_prop_M$country[43]` ,`r FVIB_rank_prop_M$country[44]`and `r FVIB_rank_prop_M$country[45]` with proportion at `r FVIB_rank_prop_M$rank_prop[43]`% , `r FVIB_rank_prop_M$country[44]`and `r FVIB_rank_prop_M$rank_prop[45]`%. Similar to women, most tournament for men had over half team defeating higher ranked one.
 
-However, we could also recognize that this proportion of women is greater than that of men for most countries, which indicates that the overall strength of the women's team is stronger than that of the men's team. But there is an outlier - England, in which the men performed better than women with a higher proportion at `r FVIB_rank_prop_M$rank_prop[3]`%. This may indicate that men's beach volleyball is stronger in the UK.
+However, we could also recognize that this proportion of women is greater than that of men for most countries, which indicates that the overall strength of the women's team is stronger than that of the men's team.
 
 ```{r plot-MR, fig.cap="Low ranking team beat higher ranking team(Man FVIB)"}
 #plot for men in FVIB
@@ -828,9 +834,13 @@ Figure \@ref(fig:growth-time) shows the growth of top 5 successful players as id
 
 # Conclusion
 
-After our analysis, we have concluded that a typical winning male volleyball team most likely has both players originating from the United States, with player one having an average age of 29.40 and an average height of 76.28 inches with player two having an average age of 29.32 and an average height of 76.39 inches.
+After our analysis, we have concluded that a typical winning male volleyball team most likely has both players originating from the United States, with player one having an average age of `r age_summary_male$Freq[11]` and an average height of `r height_summary_male$Freq[11]` inches with player two having an average age of `r age_summary_male$Freq[18]` and an average height of `r height_summary_male$Freq[18]` inches.
 
-In addition, a typical winning female volleyball team most likely has both players originating from the United States, with player one having an average age of 27.98 and an average height of 70.91 inches with player two having an average age of 28.29 and an average height of 70.85 inches.
+In addition, a typical winning female volleyball team most likely has both players originating from the United States, with player one having an average age of `r age_summary_female$Freq[11]` and an average height of `r height_summary_female$Freq[11]` inches with player two having an average age of `r age_summary_male$Freq[18]` and an average height of `r height_summary_male$Freq[18]` inches.
+
+As for the home advantage, although team of United States has the highest winning rate at `r max(FVIB_win_prop$win_rate)`%, all the winning rate at home is less than fifty percentage, that is to say, the winning rate at home is not higher than that at away, which shows that the home advantage is not obvious in FVIB competition.
+
+When it comes to the lower ranking team defeat the higher ranking one, first in FVIB circuit, it can be concluded that the most proportions of this for female and male are `r max(FVIB_rank_prop_W$rank_prop)`% by `r FVIB_rank_prop_W$country[1]` and `r max(FVIB_rank_prop_M$rank_prop)`% by `r FVIB_rank_prop_M$country[1]` respectively. Then in AVP circuit,the most proportions of this for female and male are ``r max(rank_prop_com$rank_prop)`%% and `r min(rank_prop_com$rank_prop)`%% all by `r AVP_rank_prop_M$country[1]`. So, it is not uncommon for low ranking teams to beat high ranked ones in beach volleyball. It also indirectly indicates that ranking in beach volleyball competition may not fully reflect the strength and winning rate of a team. Also, gender gap is not obvious on this issue.
 
 
 # Acknowledgements
