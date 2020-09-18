@@ -739,7 +739,7 @@ In Figure \@ref(fig:plot-RA), the bar chart on the left side is the rate of men 
 
 ```{r plot-RA,fig.cap="Low ranking team beat higher ranking team (AVP)"}
 pra <- ggplot(rank_prop_com, aes(x=reorder(gender,rank_prop), y =  rank_prop)) +
-  geom_bar(stat="identity",fill = 'purple', color = "pink",width=0.3) +
+  geom_bar(stat="identity",fill = "steelblue", width=0.3) +
   ggtitle("Low ranking team beat higher ranking team (AVP)") + 
   ylab("Rate") +
   xlab("Gender") +
@@ -754,7 +754,7 @@ Generally speaking, the situation that the lower ranked teams beat the higher ra
 
 ## What combination of the players are most successful and have teamed up for the greatest number of matches in both the volleyball circuits?
 
-```{r combos-players, echo=FALSE, include=FALSE}
+```{r combos-players, echo=FALSE}
 # most number of combinations
 
 players_comb_fivb_win <- vb_matches_fivb %>% select(w_player1, w_player2)
@@ -777,10 +777,38 @@ players_comb_fivb_total_new <- players_comb_fivb_total %>%
 #sum(players_comb_fivb_total_new$n)
 
 players_comb_fivb_total_new %>%
-  rename(Count = n) %>% head(10) %>% kable(caption = "Different combinations of players that have teamed up for the greatest number of matches in both the volleyball circuits") %>% kable_styling(bootstrap_options = c("hover", "striped")) 
+  rename(Count = n) %>% head(10) %>% kable(caption = "Different combinations of players that have teamed up for the greatest number of matches in FIVB") %>% kable_styling(bootstrap_options = c("hover", "striped")) 
 ```
 
-Table \@ref(tab:combos-players) shows top 10 different combinations of players that have teamed up for the greatest number of matches in both the volleyball circuits, which is only a subset of the total combinations of players. In total there were 5,613 unique combinations. `r players_comb_fivb_total_new$player1[1]` and `r players_comb_fivb_total_new$player2[1]` partnered up for the most number of times across both FIVB and AVP followed by `r players_comb_fivb_total_new$player1[2]` and `r players_comb_fivb_total_new$player2[2]`.
+Table \@ref(tab:combos-players) shows top 10 different combinations of players that have teamed up for the greatest number of matches in FIVB circuit, which is only a subset of the total combinations of players. In total there were 5,613 unique combinations. `r players_comb_fivb_total_new$player1[1]` and `r players_comb_fivb_total_new$player2[1]` partnered up for the most number of times across FIVB tournaments followed by `r players_comb_fivb_total_new$player1[2]` and `r players_comb_fivb_total_new$player2[2]`.
+
+```{r combos-players-avp, echo=FALSE}
+# most number of combinations
+
+players_comb_avp_win <- vb_matches_avp %>% select(w_player1, w_player2)
+players_comb_avp_win <- players_comb_avp_win %>% rename(player1 = w_player1, player2 = w_player2)
+players_comb_avp_lost <- vb_matches_avp %>% select(l_player1, l_player2)
+players_comb_avp_lost <- players_comb_avp_lost %>% rename(player1 = l_player1, player2 = l_player2)
+players_comb_avp <- rbind(players_comb_avp_win, players_comb_avp_lost)
+
+players_comb_avp_total <- players_comb_avp %>% group_by(player1, player2) %>% tally() %>% arrange(desc(n))
+
+#sum(players_comb_fivb_total$n)
+
+# checking and counting as same, a combination of player1 and player2 present as (player1, player2) at one place and at another as (player2, player1). Same combination but different order.
+
+players_comb_avp_total_new <- players_comb_avp_total %>% 
+  group_by(player1n = pmin(player1, player2), player2n = pmax(player1, player2)) %>% 
+  summarise(n = sum(n)) %>%
+  rename(player1 = player1n, player2 = player2n) %>% arrange(desc(n))
+
+#sum(players_comb_fivb_total_new$n)
+
+players_comb_avp_total_new %>%
+  rename(Count = n) %>% head(10) %>% kable(caption = "Different combinations of players that have teamed up for the greatest number of matches in AVP") %>% kable_styling(bootstrap_options = c("hover", "striped")) 
+```
+
+Table \@ref(tab:combos-players-avp) shows top 10 different combinations of players that have teamed up for the greatest number of matches in AVP circuit, which is only a subset of the total combinations of players. In total there were 7,872 unique combinations. `r players_comb_avp_total_new$player1[1]` and `r players_comb_avp_total_new$player2[1]` partnered up for the most number of times across AVP tournaments followed by `r players_comb_avp_total_new$player1[2]` and `r players_comb_avp_total_new$player2[2]`.
 
 ```{r combos-players-win, echo=FALSE}
 # combinations with most wins
@@ -795,18 +823,30 @@ players_comb_fivb_win_new <- players_comb_fivb_win %>%
 #sum(players_comb_fivb_win_new$n)
 
 players_comb_fivb_win_new %>%
-  rename(Count = n) %>% head(10) %>% kable(caption = "Different combinations of players that are the most successful") %>% kable_styling(bootstrap_options = c("hover", "striped")) 
+  rename(Count = n) %>% head(10) %>% kable(caption = "Different combinations of players that are the most successful in FIVB") %>% kable_styling(bootstrap_options = c("hover", "striped")) 
 ```
-Table \@ref(tab:combos-players-win) shows top 10 combinations of the players that are most successful in both the volleyball circuits. `r players_comb_fivb_win_new$player1[1]` and `r players_comb_fivb_win_new$player2[1]` is the most successful team across both FIVB and AVP followed by `r players_comb_fivb_win_new$player1[2]` and `r players_comb_fivb_win_new$player2[2]`. 
+
+Table \@ref(tab:combos-players-win) shows top 10 combinations of the players that are most successful in the AVP volleyball circuit. `r players_comb_fivb_win_new$player1[1]` and `r players_comb_fivb_win_new$player2[1]` is the most successful team across FIVB organised tournaments followed by `r players_comb_fivb_win_new$player1[2]` and `r players_comb_fivb_win_new$player2[2]`. 
+
+```{r combos-players-win-avp, echo=FALSE}
+# combinations with most wins
+
+players_comb_avp_win <- players_comb_avp_win %>% mutate(n = 1)
+
+players_comb_avp_win_new <- players_comb_avp_win %>% 
+  group_by(player1n = pmin(player1, player2), player2n = pmax(player1, player2)) %>% 
+  summarise(n = sum(n)) %>%
+  rename(player1 = player1n, player2 = player2n) %>% arrange(desc(n))
+
+#sum(players_comb_fivb_win_new$n)
+
+players_comb_avp_win_new %>%
+  rename(Count = n) %>% head(10) %>% kable(caption = "Different combinations of players that are the most successful in AVP") %>% kable_styling(bootstrap_options = c("hover", "striped")) 
+```
+
+Table \@ref(tab:combos-players-win-avp) shows top 10 combinations of the players that are most successful in the AVP volleyball circuit. `r players_comb_avp_win_new$player1[1]` and `r players_comb_avp_win_new$player2[1]` is the most successful team across AVP organised tournaments followed by `r players_comb_avp_win_new$player1[2]` and `r players_comb_avp_win_new$player2[2]`.
 
 ## Who are the most successful players in beach volleyball and how they have evolved over time and their skills pattern?
-
-
-# 10 most successful players
-
-#players_comb_fivb_win
-
-#players_comb_fivb_win %>% distinct(player1)
 
 ```{r  player-comb, include = FALSE}
 players_comb_fivb_win_total_player1 <- players_comb_fivb_win %>% select(player1,n)
@@ -826,12 +866,12 @@ players_comb_fivb_win_total <- rbind(players_comb_fivb_win_total_player1, player
 
 ```{r players-win, echo=FALSE}
 players_comb_fivb_win_total%>%
-  rename(Matches_Won = n) %>% head(10) %>% kable(caption = "Total Matches won per player") %>% kable_styling(bootstrap_options = c("hover", "striped")) 
+  rename(Matches_Won = n) %>% head(10) %>% kable(caption = "Total Matches won per player in FIVB Circuit") %>% kable_styling(bootstrap_options = c("hover", "striped")) 
 
 #players_comb_fivb_win_total %>% head(10)
 ```
 
-Table \@ref(tab:players-win) shows top 10 most successful players in both the volleyball circuits combined. `r players_comb_fivb_win_total$player[1]` leads with `r players_comb_fivb_win_total$n[1]` combined wins so far followed by `r players_comb_fivb_win_total$n[2]` and `r players_comb_fivb_win_total$n[3]`. 
+Table \@ref(tab:players-win) shows top 10 most successful players in the FIVB volleyball circuit. `r players_comb_fivb_win_total$player[1]` leads with `r players_comb_fivb_win_total$n[1]` combined wins so far followed by `r players_comb_fivb_win_total$player[2]` and `r players_comb_fivb_win_total$n[2]`. 
 
 ```{r player-list,include=FALSE}
 #players_list <- players_comb_fivb_win_total %>% head(5) %>% select(player)
@@ -859,26 +899,100 @@ player_best <- merge(x = players_comb_fivb_win_year_all, y = players_comb_fivb_w
 player_best <- player_best %>% arrange(player)
 player_best[is.na(player_best)] <- 0 
 
-player_best
+#player_best
 ```
 
-```{r growth-time, echo=FALSE, fig.align = 'center', fig.cap="Top 5 successful players growth in terms of win overtime"}
+```{r growth-time, echo=FALSE, fig.align = 'center', fig.cap="Top 5 successful players growth in terms of win overtime in FIVB"}
 player_best_plot <- player_best %>%
   pivot_longer(c(-year, -player), names_to = "match_type", values_to = "count") 
 
 p <- ggplot(player_best_plot, aes(x=year, y=count, fill=match_type)) +
-    geom_bar(stat='identity', position='dodge') + facet_grid(rows = vars(player,size=8)) +
+    geom_bar(stat='identity', position='dodge') + facet_wrap(~player) +
   scale_x_continuous(breaks = seq(2000,2020,20)) +
   theme(
         axis.text=element_text(size=10),
         axis.title=element_text(size=12,face="bold"),
-        plot.margin = unit(c(0.5, 0.2, 0.5, 0.2), "cm"))
+        plot.margin = unit(c(0.5, 0.2, 0.5, 0.2), "cm"))+
+  ggtitle("Top 5 successful players growth in terms of win overtime in FIVB")
   
 
 ggplotly(p)
 ```
 
-Figure \@ref(fig:growth-time) shows the growth of top 5 successful players as identified in table \@ref(tab:players-win). 
+Figure \@ref(fig:growth-time) shows the growth of top 5 successful players as identified in table \@ref(tab:players-win). It can be noticed that `r players_comb_fivb_win_total$player[2]` had been a consistent player over the years participating in almost every tournament organised by FIVB. Both `r players_comb_fivb_win_total$player[1]` and `r players_comb_fivb_win_total$player[2]` shows a positive ratio between their win and total matches played overtime.   
+
+```{r  player-comb-avp, include = FALSE}
+players_comb_avp_win_total_player1 <- players_comb_avp_win %>% select(player1,n)
+players_comb_avp_win_total_player1 <- players_comb_avp_win_total_player1 %>% 
+  group_by(player1) %>% 
+  summarise(n = sum(n)) %>% arrange(desc(n)) %>% rename(player = player1)
+#players_comb_fivb_win_total_player1
+
+players_comb_avp_win_total_player2 <- players_comb_avp_win %>% select(player2,n)
+players_comb_avp_win_total_player2 <- players_comb_avp_win_total_player2 %>% 
+  group_by(player2) %>% 
+  summarise(n = sum(n)) %>% arrange(desc(n)) %>% rename(player = player2)
+players_comb_avp_win_total_player2
+
+players_comb_avp_win_total <- rbind(players_comb_avp_win_total_player1, players_comb_avp_win_total_player2)
+```
+
+```{r players-win-avp, echo=FALSE}
+players_comb_avp_win_total%>%
+  rename(Matches_Won = n) %>% head(10) %>% kable(caption = "Total Matches won per player in AVP Circuit") %>% kable_styling(bootstrap_options = c("hover", "striped")) 
+
+#players_comb_fivb_win_total %>% head(10)
+```
+
+Table \@ref(tab:players-win-avp) shows top 10 most successful players in the AVP volleyball circuit. `r players_comb_avp_win_total$player[1]` leads with `r players_comb_avp_win_total$n[1]` combined wins so far followed by `r players_comb_avp_win_total$player[2]` and `r players_comb_avp_win_total$n[2]`. 
+
+```{r player-list-avp,include=FALSE}
+#players_list <- players_comb_fivb_win_total %>% head(5) %>% select(player)
+
+players_comb_avp_win_year_all <- vb_matches_avp %>% select(year, w_player1, w_player2, l_player1, l_player2)
+players_comb_avp_win_year_win <- vb_matches_avp %>% select(year, w_player1, w_player2)
+
+#players_comb_fivb_win_year_all
+#players_comb_fivb_win_year_win
+
+players_comb_avp_win_year_all <- players_comb_avp_win_year_all %>%
+  pivot_longer(!year, names_to = "player type", values_to = "player") %>% select(year, player)
+players_comb_avp_win_year_win <- players_comb_avp_win_year_win %>%
+  pivot_longer(!year, names_to = "player type", values_to = "player") %>% select(year, player)
+
+players_comb_avp_win_year_all <- players_comb_avp_win_year_all %>% group_by(year, player) %>% tally()
+players_comb_avp_win_year_win <- players_comb_avp_win_year_win %>% group_by(year, player) %>% tally()
+
+players_comb_avp_win_year_all <- players_comb_avp_win_year_all %>% filter(player %in% c("Elaine Youngs","Kerri Walsh Jennings","Jake Gibb","Phil Dalhausser","Annett Davis")) %>% arrange(player) %>% rename(total_matches = n)
+
+players_comb_avp_win_year_win <- players_comb_avp_win_year_win %>% filter(player %in% c("Elaine Youngs","Kerri Walsh Jennings","Jake Gibb","Phil Dalhausser","Annett Davis")) %>% arrange(player) %>% rename(win_matches = n)
+
+player_best_avp <- merge(x = players_comb_avp_win_year_all, y = players_comb_avp_win_year_win, by = c("year","player"), all.x = TRUE)
+
+player_best_avp <- player_best_avp %>% arrange(player)
+player_best_avp[is.na(player_best_avp)] <- 0 
+
+#player_best_avp
+```
+
+```{r growth-time-avp, echo=FALSE, fig.align = 'center', fig.cap="Top 5 successful players growth in terms of win overtime in AVP"}
+player_best_plot_avp <- player_best_avp %>%
+  pivot_longer(c(-year, -player), names_to = "match_type", values_to = "count") 
+
+p_avp <- ggplot(player_best_plot_avp, aes(x=year, y=count, fill=match_type)) +
+    geom_bar(stat='identity', position='dodge') + facet_wrap(~player) +
+  scale_x_continuous(breaks = seq(2000,2020,20)) +
+  theme(
+        axis.text=element_text(size=10),
+        axis.title=element_text(size=12,face="bold"),
+        plot.margin = unit(c(0.5, 0.2, 0.5, 0.2), "cm"))+
+  ggtitle("Top 5 successful players growth in terms of win overtime in AVP")
+  
+
+ggplotly(p_avp)
+```
+
+Figure \@ref(fig:growth-time-avp) shows the growth of top 5 successful players as identified in table \@ref(tab:players-win-avp). It can be noticed that AVP has some rather different output as compared to FIVB. `r players_comb_avp_win_total$player[1]` although has the highest number of wins but she has not played any matches in AVP tournaments after that. The most strong player has to be `r players_comb_avp_win_total$player[2]` with a strong win rate compared to matches played.
 
 # Conclusion
 
@@ -889,6 +1003,10 @@ In addition, a typical winning female volleyball team most likely has both playe
 As for the home advantage, although team of Brazil has the highest winning rate at `r max(FVIB_win_prop$win_rate)`%, all the winning rate at home is less than fifty percentage, that is to say, the winning rate at home is not higher than that at away, which shows that the home advantage is not obvious in FVIB competition regardless of gender. But there does exist some gaps between male and female.
 
 When it comes to the lower ranking team defeat the higher ranking one, first in FVIB circuit, it can be concluded that the most proportions of this for female and male are `r max(FVIB_rank_prop_W$rank_prop)`% by `r FVIB_rank_prop_W$country[1]` and `r max(FVIB_rank_prop_M$rank_prop)`% by `r FVIB_rank_prop_M$country[1]` respectively. Then in AVP circuit,the most proportions of this for female and male are ``r max(rank_prop_com$rank_prop)`%% and `r min(rank_prop_com$rank_prop)`%% all by `r AVP_rank_prop_M$country[1]`. So, it is not uncommon for low ranking teams to beat high ranked ones in beach volleyball. It also indirectly indicates that ranking in beach volleyball competition may not fully reflect the strength and winning rate of a team. Also, gender gap is not obvious on this issue.
+
+Also, when we look at the players and how they have teamed up, `r players_comb_fivb_total_new$player1[1]` and `r players_comb_fivb_total_new$player2[1]` partnered up for the most number of times across FIVB followed by `r players_comb_fivb_total_new$player1[2]` and `r players_comb_fivb_total_new$player2[2]` and `r players_comb_avp_total_new$player1[1]` and `r players_comb_avp_total_new$player2[1]` partnered up for the most number of times across AVP followed by `r players_comb_fivb_total_new$player1[2]` and `r players_comb_fivb_total_new$player2[2]`. 
+
+Among the player combinations present in both AVP and FIVB, `r players_comb_fivb_win_total$player[1]` has been the most successful player in FIVB with `r players_comb_fivb_win_total$n[1]` wins and `r players_comb_avp_win_total$player[1]` has been the most successful player in AVP with `r players_comb_avp_win_total$n[1]`.
 
 
 # Acknowledgements
